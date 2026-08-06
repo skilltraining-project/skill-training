@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Step 0 -- turn a screenplay into training data.
 
-A feature screenplay is one long document; this loop wants a series. The script
+A feature screenplay is one long document. This loop wants a series. The script
 extracts the text, finds the scene boundaries, and groups scenes into episodes
 of roughly equal length, so that each step of training covers a comparable
 stretch of story.
@@ -53,7 +53,7 @@ def extract_text(pdf: Path) -> str:
     if proc.returncode != 0 or len(proc.stdout.strip()) < 1000:
         raise SystemExit(
             f"pdftotext got almost nothing out of {pdf}. It is probably a scan "
-            "with no text layer; find another copy or OCR it first.")
+            "with no text layer. Find another copy, or OCR it first.")
     return proc.stdout
 
 

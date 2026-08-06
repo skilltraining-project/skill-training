@@ -8,8 +8,8 @@ project has exactly one external dependency:
   a readable trajectory, and record which files the agent read (used later for
   credit assignment).
 - `run_text()`   -- one call in, one answer out, for the steps that are plain
-  transformations (noising, loss report). The CLI still has its tools; these
-  prompts simply give it no reason to reach for them, and the material they
+  transformations (noising, loss report). The CLI still has its tools, but these
+  prompts give it no reason to reach for them, and the material they
   need is inlined.
 
 Authentication is whatever your `claude` CLI already uses: a Claude

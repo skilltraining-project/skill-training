@@ -10,8 +10,8 @@ Runs the other four in the order that makes them a training loop:
 
 A step covers a fixed stretch of episodes across every work, so the works move
 through the story together. Forward and loss are independent per work and run
-concurrently; backward is single and last, because every work's evidence has to
-be on the table before the pool is allowed to change.
+concurrently. Backward is single and last, because every work's evidence has
+to be on the table before the pool is allowed to change.
 
     python s5_train.py --work data/example --steps 4 --episodes-per-step 5
 

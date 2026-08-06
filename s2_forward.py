@@ -34,8 +34,8 @@ def run(*, work: dataset.Work, out_dir: Path, pool: Path, first: int, last: int,
     `story_path` overrides where the noised story is read from. The training
     loop points it at the run's own copy, so the only story path the agent ever
     sees is inside the run directory, nowhere near the human screenplay.
-    `off_limits` are directories the agent must not read from; if it does, the
-    pass fails.
+    `off_limits` are directories the agent must not read from. Opening one fails
+    the pass.
     """
     story_path = story_path or work.story_path
     scripts_dir = out_dir / "scripts"

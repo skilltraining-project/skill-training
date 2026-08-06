@@ -6,8 +6,8 @@ events stay, the dialogue and staging go. That summary is what the writer will
 be given later, with the original held back as the answer key.
 
 This is the forward process of a diffusion model, done in text. The human
-screenplay is x0; noising is a fixed corruption that destroys craft while
-preserving story; the training loop that follows learns the denoiser. Because
+screenplay is x0. Noising is a fixed corruption that destroys craft while
+preserving story, and the training loop that follows learns the denoiser. Because
 the corruption is applied to a real screenplay, every training example comes
 with a ground truth for free -- no one has to label anything.
 

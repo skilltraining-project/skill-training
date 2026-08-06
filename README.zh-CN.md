@@ -4,6 +4,11 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
+[![tests](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml)
+![python](https://img.shields.io/badge/python-3.10%2B-blue)
+![license](https://img.shields.io/badge/license-MIT-green)
+![dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
+
 全程不碰模型权重。可训练参数就是一堆 `.md` 文件，agent 干活前会去读它们。
 所谓梯度，就是这些文件上的一次 `git diff`。
 
@@ -290,6 +295,7 @@ agent 是带 `--dangerously-skip-permissions` 跑的，这也是这个循环能�
 | `MEMSGD_API_TIMEOUT_MS` | `600000` | 单次请求超时，模型慢就调大 |
 | `MEMSGD_MAX_LINES` | `50` | 单条规则行数上限 |
 | `MEMSGD_MAX_BODY_CHARS` | `4800` | 单条规则正文字符上限 |
+| `MEMSGD_MAX_DESCRIPTION_CHARS` | `800` | 单条规则 description 字符上限 |
 
 选模型用 `--model`，直接透传给 CLI；不传就用你 CLI 自己的默认。
 任何 Anthropic 兼容网关都能用，走 CLI 自己的 `ANTHROPIC_BASE_URL` 和

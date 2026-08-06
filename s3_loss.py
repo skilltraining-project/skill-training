@@ -2,15 +2,16 @@
 """Step 3 -- the loss.
 
 Put the model's screenplay next to the human original and write up how they
-differ. Both were made from the same story, so plot is not the subject; craft is.
+differ. Both were made from the same story, so plot is not the subject. Craft is.
 
 This is the one place where the answer key is opened. The report that comes out
 is the training signal -- a paragraph of prose instead of a number, but playing
 the same role: it says what to change, and it is the only thing the optimizer
 is allowed to learn from.
 
-    python s3_loss.py --work data/example --scripts runs/.../scripts \\
-        --out runs/.../loss_report.md --first 1 --last 5
+    python s3_loss.py --work data/example --first 1 --last 5 \\
+        --scripts runs/<id>/epoch_00/step_00/example/scripts \\
+        --out runs/<id>/loss/epoch_00/step_00/example.md
 """
 
 from __future__ import annotations
