@@ -46,9 +46,10 @@ Write each episode to its own file, at exactly these paths:
 
 {{output_paths}}
 
-One chapter becomes one episode: chapter N goes to the file whose name ends in
-`ep<N>.txt`. Do not merge chapters or move material between them. The full story is at `{{story_path}}` if you need to check something
-before or after this stretch. You normally will not.
+One chapter becomes one episode: chapter N goes to the file numbered N in the
+list above. Do not merge chapters or move material between them. The full story
+is at `{{story_path}}` if you need to check something before or after this
+stretch. You normally will not.
 
 This is a closed-book exercise. These chapters were made by stripping the craft
 out of a screenplay somebody else wrote, and that screenplay is the answer key.

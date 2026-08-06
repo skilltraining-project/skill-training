@@ -7,15 +7,21 @@ Training data is not committed here. `data/get_example.sh` downloads it, and
 
 ```
 data/<work>/
-  source.pdf          the screenplay you started from (not in git)
-  human/ep01.txt ...  it, split into episodes. The ground truth.
-  story.md            the same story after noising. The training input.
-  .cache/heavy/ch01.md  noising cache, keyed by noise level (not in git)
+  source.pdf            the screenplay you started from
+  human/ep01.txt ...    it, split into episodes. The ground truth.
+  story.md              the same story after noising. The training input.
+  .cache/heavy/ch01.md  noising cache, keyed by noise level
 ```
 
-`human/` is the answer key. The forward agent never sees it, and nothing in a
-run directory points at it. `story.md` is one file with `# Chapter N:` headings,
-numbered to match the episodes.
+None of it is in git. `.gitignore` keeps everything under `data/` out except
+this file and the download script, so no screenplay ever lands in an MIT
+repository by accident.
+
+`human/` is the answer key. The forward agent never sees it, nothing in a run
+directory points at it, and every forward pass is checked afterwards against its
+own read trace: a pass that opened `human/` fails instead of scoring well.
+`story.md` is one file with `# Chapter N:` headings, numbered to match the
+episodes.
 
 ## The example: Valkaama (2010)
 

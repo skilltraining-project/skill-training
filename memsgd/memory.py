@@ -239,6 +239,25 @@ def git(pool: Path, *args: str, capture: bool = False) -> subprocess.CompletedPr
                           capture_output=capture, check=False)
 
 
+def require_own_repo(pool: Path) -> None:
+    """Fail unless `pool` is the root of its own git repository.
+
+    A `pool/.git` that exists but is unusable (an interrupted `git init`, a
+    directory copied with `cp -r`, a stale worktree pointer) makes git walk up
+    the tree and quietly adopt the enclosing repository. Every git call here
+    would then act on the user's own checkout, and `reset --hard` would throw
+    away their uncommitted work.
+    """
+    proc = git(pool, "rev-parse", "--show-toplevel", capture=True)
+    top = proc.stdout.strip()
+    if proc.returncode != 0 or Path(top).resolve() != pool.resolve():
+        raise SystemExit(
+            f"{pool} is not the root of its own git repository"
+            + (f" (git resolves it to {top})" if top else "")
+            + ".\nRefusing to run git here. Remove or repair the pool's .git "
+              "directory and try again.")
+
+
 def head(pool: Path) -> str | None:
     proc = git(pool, "rev-parse", "--verify", "HEAD", capture=True)
     return proc.stdout.strip() if proc.returncode == 0 else None
@@ -267,25 +286,6 @@ def reset(pool: Path, commit: str) -> None:
     # three to exist, so put them back.
     for name in FOLDER_NAMES:
         (pool / name).mkdir(exist_ok=True)
-
-
-def require_own_repo(pool: Path) -> None:
-    """Fail unless `pool` is the root of its own git repository.
-
-    A `pool/.git` that exists but is unusable (an interrupted `git init`, a
-    directory copied with `cp -r`, a stale worktree pointer) makes git walk up
-    the tree and quietly adopt the enclosing repository. Every git call here
-    would then act on the user's own checkout, and `reset --hard` would throw
-    away their uncommitted work.
-    """
-    proc = git(pool, "rev-parse", "--show-toplevel", capture=True)
-    top = proc.stdout.strip()
-    if proc.returncode != 0 or Path(top).resolve() != pool.resolve():
-        raise SystemExit(
-            f"{pool} is not the root of its own git repository"
-            + (f" (git resolves it to {top})" if top else "")
-            + ".\nRefusing to run git here. Remove or repair the pool's .git "
-              "directory and try again.")
 
 
 def init(pool: Path, lint_report: Path) -> None:
