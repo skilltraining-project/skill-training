@@ -1,0 +1,17 @@
+[project]
+name = "memory-sgd"
+version = "0.1.0"
+description = "Train an agent's skill by running SGD on a pool of Markdown notes"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+# No third-party packages, on purpose. The only thing this project needs that
+# is not in the standard library is the `claude` CLI, and that is a binary, not
+# an import. Nothing here has to be kept in step with an SDK release.
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Mor-Li/memory-sgd"
+
+[tool.ruff]
+line-length = 96
