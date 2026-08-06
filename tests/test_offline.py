@@ -304,6 +304,43 @@ class TestPoolIsolation(TempCase):
         self.assertTrue(memory.is_clean(pool))
 
 
+class TestSeedPool(TempCase):
+    """`--init-pool` is what makes a frozen-pool control possible."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.source = self.tmp / "trained"
+        (self.source / "01_craft_elements").mkdir(parents=True)
+        (self.source / "01_craft_elements" / "subtext.md").write_text(
+            GOOD, encoding="utf-8")
+        self.run = run.open_run(self.tmp / "runs" / "frozen",
+                                {"works": ["example"], "episodes_per_step": 5,
+                                 "steps": 1, "epochs": 1, "model": None,
+                                 "no_backward": True, "init_pool": str(self.source)})
+        memory.init(self.run.pool, self.tmp / "lint.txt")
+
+    def test_entries_are_copied_and_pass_the_linter(self):
+        s5_train.seed_pool(self.run, self.source)
+        self.assertTrue((self.run.pool / "01_craft_elements" / "subtext.md").exists())
+        self.assertEqual(memory.lint(self.run.pool, self.tmp / "r.txt"), 0)
+
+    def test_seeding_twice_does_not_overwrite_later_training(self):
+        s5_train.seed_pool(self.run, self.source)
+        entry = self.run.pool / "01_craft_elements" / "subtext.md"
+        entry.write_text(GOOD.replace("Route", "Reroute"), encoding="utf-8")
+        s5_train.seed_pool(self.run, self.source)
+        self.assertIn("Reroute", entry.read_text())
+
+    def test_an_empty_source_is_an_error(self):
+        empty = self.tmp / "empty"
+        empty.mkdir()
+        with self.assertRaises(SystemExit):
+            s5_train.seed_pool(self.run, empty)
+
+    def test_a_seeded_frozen_run_gets_its_own_id(self):
+        self.assertEqual(run.auto_run_id(self.run.config), "1w_e5_default_seeded_frozen")
+
+
 class TestClosedBookGuard(TempCase):
     def trace(self, *lines: str) -> Path:
         path = self.tmp / "forward_reads.txt"
