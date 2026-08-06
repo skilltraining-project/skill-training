@@ -168,29 +168,37 @@ memory/
 
 ## 一步训练具体长什么样
 
-来自示例剧本的第一个训练 step。当时池子是空的，写手全凭自己的直觉写，
-loss 报告回来时说了一堆，其中一条是：
+示例剧本头两集上的第一个训练 step。当时池子是空的，写手全凭自己的直觉写。
+loss 报告开篇就是一张账：
 
-> Human: abstract but three words long. Model: concrete but forty words long,
-> with a metaphor attached.
->
-> （人类：抽象，但只有三个词。模型：具体，但四十个词，还挂了个比喻。）
+| | 人类 | 模型 |
+|---|---|---|
+| 每集词数 | 648 | 2,491 |
+| 台词条数 | 28 | 120 |
+| 台词长度中位数 | 9 词 | 4 词 |
+| 三个词以内的台词占比 | 14% | 42% |
+| 动作句平均长度 | 8.5 词 | 7.4 词 |
 
-优化器读完报告，判断这个差异出现得够频繁、值得写成规则而不是当个例放过，
-于是提交了一条新条目。其中一段：
+最后一行才是关键：**模型的句子长度跟职业编剧一样**，它只是写了六倍那么多句。
+而且它的台词是两极的——一堆两个词的来回，夹几段长篇大论，
+唯独缺了人类一直待着的那个中间地带。
+
+优化器读完这些，判断这是个普遍模式而不是个例，于是提交了一条新条目。其中一段：
 
 ```markdown
 ## Rules
-Count speeches against the beat. Name what the exchange settles, then find the
-fewest lines that settle it. A beat running twelve or fifteen speeches is very
-often three speeches with padding between them.
+Live in the middle band. Most speeches want to be roughly eight to twelve words:
+long enough to be a thought, short enough to be spoken in one breath. An exchange
+built only of two-word volleys and long arias has no ordinary register in it, and
+both extremes stop registering when they are the only two settings available.
 
-Do not volley. Splitting one thought into a rally of one- and two-word lines
-feels like naturalism and reads as stalling. Give the character the whole
-thought in one speech and move on.
+Stop a rhythm once it has paid. When an exchange has done what it exists to do --
+shown that these two are easy together, that one is needling the other, that they
+disagree about a third person -- end it. A pattern you are enjoying will run five
+or six turns past its point without feeling wrong from the inside.
 ```
 
-这一步一共长出 8 条，分布在三个文件夹里，全部在 linter 的限额内，一次 commit 提交。
+这一步一共长出 7 条，分布在三个文件夹里，全部在 linter 的限额内，一次 commit 提交。
 下一步写手会看到它们的 description，然后按当前要写的内容挑着打开。
 
 这条规则没有人写。那句观察也没有人写。全程只提供了一份剧本，和一套毁掉它的办法。

@@ -192,28 +192,40 @@ instead of just bigger.
 
 ## What one step actually looks like
 
-From the first training step on the example screenplay. The writer had an empty
-pool, so it wrote from its own instincts, and the loss report came back with,
-among other things, this:
+The first training step over two episodes of the example screenplay. The writer
+had an empty pool, so it wrote from its own instincts. The loss report opened by
+counting:
 
-> Human: abstract but three words long. Model: concrete but forty words long,
-> with a metaphor attached.
+| | human | model |
+|---|---|---|
+| words per episode | 648 | 2,491 |
+| speeches | 28 | 120 |
+| median speech length | 9 words | 4 words |
+| speeches of three words or fewer | 14% | 42% |
+| mean action sentence length | 8.5 words | 7.4 words |
 
-The optimizer read that report, decided the difference showed up often enough to
-be a rule rather than a one-off, and committed a new entry. Part of it:
+That last row is the interesting one. The model writes sentences the same length
+as the professional. It just writes six times as many of them. And its dialogue
+is bimodal: two-word volleys, then long speeches, with little of the ordinary
+middle the human lives in.
+
+The optimizer read that, decided the pattern was general rather than a one-off,
+and committed a new entry. Part of it:
 
 ```markdown
 ## Rules
-Count speeches against the beat. Name what the exchange settles, then find the
-fewest lines that settle it. A beat running twelve or fifteen speeches is very
-often three speeches with padding between them.
+Live in the middle band. Most speeches want to be roughly eight to twelve words:
+long enough to be a thought, short enough to be spoken in one breath. An exchange
+built only of two-word volleys and long arias has no ordinary register in it, and
+both extremes stop registering when they are the only two settings available.
 
-Do not volley. Splitting one thought into a rally of one- and two-word lines
-feels like naturalism and reads as stalling. Give the character the whole
-thought in one speech and move on.
+Stop a rhythm once it has paid. When an exchange has done what it exists to do --
+shown that these two are easy together, that one is needling the other, that they
+disagree about a third person -- end it. A pattern you are enjoying will run five
+or six turns past its point without feeling wrong from the inside.
 ```
 
-Eight entries came out of that one step, spread across the three folders, all of
+Seven entries came out of that one step, spread across the three folders, all of
 them within the linter's limits, all in one commit. On the next step the writer
 sees their descriptions and opens the ones that fit what it is about to write.
 
