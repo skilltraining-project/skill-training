@@ -23,8 +23,8 @@ import re
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from memsgd import dataset, prompts
-from memsgd.agent import AgentError, run_text
+from skilltrain import dataset, prompts
+from skilltrain.agent import AgentError, run_text
 
 BANNED = ("INT.", "EXT.", "V.O.", "O.S.", "CUT TO", "FADE IN", "(CONT'D)")
 # `startswith(f"# Chapter {n}")` would accept `# Chapter 12` when asking for 1.

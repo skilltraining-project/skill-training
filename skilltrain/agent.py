@@ -31,12 +31,12 @@ from .trajectory import collect_read_trace, render_trajectory
 # a training agent, and it will be obeyed: a personal "always answer in Chinese"
 # rule silently produced Chinese chapters here until this was set to empty.
 # Authentication is unaffected, so the agent still runs as you. Set
-# MEMSGD_SETTING_SOURCES=user,project,local to get the CLI's normal behaviour back.
-SETTING_SOURCES = os.environ.get("MEMSGD_SETTING_SOURCES", "")
+# SKILLTRAIN_SETTING_SOURCES=user,project,local to get the CLI's normal behaviour back.
+SETTING_SOURCES = os.environ.get("SKILLTRAIN_SETTING_SOURCES", "")
 # A single API request that goes silent is the one failure the outer timeout
 # cannot heal quickly. Ten minutes is generous for one turn and lets the CLI
 # retry on a fresh connection instead of hanging for the whole step budget.
-API_TIMEOUT_MS = os.environ.get("MEMSGD_API_TIMEOUT_MS", "600000")
+API_TIMEOUT_MS = os.environ.get("SKILLTRAIN_API_TIMEOUT_MS", "600000")
 
 
 class AgentError(RuntimeError):

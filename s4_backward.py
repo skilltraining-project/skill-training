@@ -27,8 +27,8 @@ import shutil
 import subprocess
 from pathlib import Path
 
-from memsgd import memory, prompts
-from memsgd.agent import run_agent
+from skilltrain import memory, prompts
+from skilltrain.agent import run_agent
 
 REQUIRED_KEYS = ("work", "first", "last", "loss_report", "reads", "trajectory")
 

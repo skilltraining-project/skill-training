@@ -32,7 +32,7 @@ from pathlib import Path
 import s2_forward
 import s3_loss
 import s4_backward
-from memsgd import dataset, memory, run as runlib
+from skilltrain import dataset, memory, run as runlib
 
 
 def forward_and_loss(work: dataset.Work, run: runlib.Run, epoch: int, step: int,

@@ -21,8 +21,8 @@ import argparse
 from collections.abc import Sequence
 from pathlib import Path
 
-from memsgd import dataset, memory, prompts
-from memsgd.agent import run_agent
+from skilltrain import dataset, memory, prompts
+from skilltrain.agent import run_agent
 
 
 def run(*, work: dataset.Work, out_dir: Path, pool: Path, first: int, last: int,

@@ -19,8 +19,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from memsgd import dataset, prompts
-from memsgd.agent import AgentError, run_text
+from skilltrain import dataset, prompts
+from skilltrain.agent import AgentError, run_text
 
 
 def read_scripts(scripts_dir: Path, first: int, last: int) -> str:

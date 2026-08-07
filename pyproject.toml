@@ -1,5 +1,5 @@
 [project]
-name = "memory-sgd"
+name = "skill-training"
 version = "0.1.0"
 description = "Train an agent's skill by running SGD on a pool of Markdown notes"
 readme = "README.md"
@@ -11,7 +11,7 @@ license = { text = "MIT" }
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/Mor-Li/memory-sgd"
+Homepage = "https://github.com/Mor-Li/skill-training"
 
 [tool.ruff]
 line-length = 96

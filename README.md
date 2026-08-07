@@ -1,10 +1,10 @@
-# memory-sgd
+# skill-training
 
 **Train an agent's skill by running SGD on a pool of Markdown notes.**
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-[![tests](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml)
+[![tests](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
@@ -88,7 +88,7 @@ dependencies. Developed and tested on macOS and Linux, and it assumes a POSIX
 shell.
 
 ```bash
-git clone https://github.com/Mor-Li/memory-sgd && cd memory-sgd
+git clone https://github.com/Mor-Li/skill-training && cd skill-training
 python3 -m unittest discover tests      # offline checks, no API calls
 ```
 
@@ -349,11 +349,11 @@ list. A few things you should not need often are environment variables:
 
 | variable | default | what it does |
 |---|---|---|
-| `MEMSGD_SETTING_SOURCES` | empty | which CLI setting layers the agent loads. Empty keeps your own `CLAUDE.md` out of the experiment |
-| `MEMSGD_API_TIMEOUT_MS` | `600000` | per-request timeout, raise it for slow models |
-| `MEMSGD_MAX_LINES` | `50` | line limit per rule |
-| `MEMSGD_MAX_BODY_CHARS` | `4800` | body limit per rule |
-| `MEMSGD_MAX_DESCRIPTION_CHARS` | `800` | description limit per rule |
+| `SKILLTRAIN_SETTING_SOURCES` | empty | which CLI setting layers the agent loads. Empty keeps your own `CLAUDE.md` out of the experiment |
+| `SKILLTRAIN_API_TIMEOUT_MS` | `600000` | per-request timeout, raise it for slow models |
+| `SKILLTRAIN_MAX_LINES` | `50` | line limit per rule |
+| `SKILLTRAIN_MAX_BODY_CHARS` | `4800` | body limit per rule |
+| `SKILLTRAIN_MAX_DESCRIPTION_CHARS` | `800` | description limit per rule |
 
 Model selection is `--model`, passed straight through to the CLI. Leave it off
 to use whatever your CLI is set to. Any Anthropic-compatible gateway works

@@ -29,7 +29,7 @@ that writes a malformed entry cannot commit it.
 
 Runnable on its own:
 
-    python memsgd/memory.py --pool runs/<id>/memory --report /tmp/lint.txt
+    python skilltrain/memory.py --pool runs/<id>/memory --report /tmp/lint.txt
 """
 
 from __future__ import annotations
@@ -69,9 +69,9 @@ FOLDER_NAMES: tuple[str, ...] = tuple(name for name, _ in FOLDERS)
 # Roughly 50 lines / 1200 tokens / 200 tokens, measured in characters so the
 # project stays dependency-free. Entries are rule cards, not essays; a pool that
 # grows without limit stops being routable.
-MAX_LINES = int(os.environ.get("MEMSGD_MAX_LINES", "50"))
-MAX_BODY_CHARS = int(os.environ.get("MEMSGD_MAX_BODY_CHARS", "4800"))
-MAX_DESCRIPTION_CHARS = int(os.environ.get("MEMSGD_MAX_DESCRIPTION_CHARS", "800"))
+MAX_LINES = int(os.environ.get("SKILLTRAIN_MAX_LINES", "50"))
+MAX_BODY_CHARS = int(os.environ.get("SKILLTRAIN_MAX_BODY_CHARS", "4800"))
+MAX_DESCRIPTION_CHARS = int(os.environ.get("SKILLTRAIN_MAX_DESCRIPTION_CHARS", "800"))
 
 BODY_HEADING = "## Rules"
 # A memory entry is a rule you can apply next time, not a record of what went
@@ -301,8 +301,8 @@ def init(pool: Path, lint_report: Path) -> None:
     if not (pool / ".git").is_dir():
         git(pool, "init", "-q")
     require_own_repo(pool)
-    git(pool, "config", "user.name", "memory-sgd")
-    git(pool, "config", "user.email", "memory-sgd@localhost")
+    git(pool, "config", "user.name", "skill-training")
+    git(pool, "config", "user.email", "skill-training@localhost")
     # Two settings from the user's global config would otherwise break the pool
     # silently. `core.hooksPath` makes git ignore the hook installed below, so
     # the linter would stop being binding. `commit.gpgsign` makes every commit

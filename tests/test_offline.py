@@ -21,7 +21,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import s0_prepare_data  # noqa: E402
 import s2_forward  # noqa: E402
 import s5_train  # noqa: E402
-from memsgd import dataset, memory, prompts, run, trajectory  # noqa: E402
+from skilltrain import dataset, memory, prompts, run, trajectory  # noqa: E402
 
 GOOD = """---
 description: Use when two characters argue about something small and mean something large. Not for lines that only deliver facts.

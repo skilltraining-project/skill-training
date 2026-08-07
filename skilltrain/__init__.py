@@ -1,4 +1,4 @@
-"""memory-sgd: gradient descent on an agent's notes.
+"""skill-training: gradient descent on an agent's notes.
 
 The pieces, in the order the pipeline uses them:
 

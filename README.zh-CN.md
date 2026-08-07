@@ -1,10 +1,10 @@
-# memory-sgd
+# skill-training
 
 **把一堆 Markdown 笔记当参数，对它做梯度下降，训练 agent 的"手艺"。**
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-[![tests](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/memory-sgd/actions/workflows/test.yml)
+[![tests](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
@@ -73,7 +73,7 @@ backward 是唯一有权写笔记的角色。它拿到的除了 loss 报告，�
 没了。没有任何 Python 依赖。在 macOS 和 Linux 上开发和测试，假设有 POSIX shell。
 
 ```bash
-git clone https://github.com/Mor-Li/memory-sgd && cd memory-sgd
+git clone https://github.com/Mor-Li/skill-training && cd skill-training
 python3 -m unittest discover tests      # 离线自检，不调 API
 ```
 
@@ -299,11 +299,11 @@ agent 是带 `--dangerously-skip-permissions` 跑的，这也是这个循环能�
 
 | 变量 | 默认 | 作用 |
 |---|---|---|
-| `MEMSGD_SETTING_SOURCES` | 空 | agent 加载哪几层 CLI 配置。留空 = 你自己的 `CLAUDE.md` 进不去实验 |
-| `MEMSGD_API_TIMEOUT_MS` | `600000` | 单次请求超时，模型慢就调大 |
-| `MEMSGD_MAX_LINES` | `50` | 单条规则行数上限 |
-| `MEMSGD_MAX_BODY_CHARS` | `4800` | 单条规则正文字符上限 |
-| `MEMSGD_MAX_DESCRIPTION_CHARS` | `800` | 单条规则 description 字符上限 |
+| `SKILLTRAIN_SETTING_SOURCES` | 空 | agent 加载哪几层 CLI 配置。留空 = 你自己的 `CLAUDE.md` 进不去实验 |
+| `SKILLTRAIN_API_TIMEOUT_MS` | `600000` | 单次请求超时，模型慢就调大 |
+| `SKILLTRAIN_MAX_LINES` | `50` | 单条规则行数上限 |
+| `SKILLTRAIN_MAX_BODY_CHARS` | `4800` | 单条规则正文字符上限 |
+| `SKILLTRAIN_MAX_DESCRIPTION_CHARS` | `800` | 单条规则 description 字符上限 |
 
 选模型用 `--model`，直接透传给 CLI；不传就用你 CLI 自己的默认。
 任何 Anthropic 兼容网关都能用，走 CLI 自己的 `ANTHROPIC_BASE_URL` 和
