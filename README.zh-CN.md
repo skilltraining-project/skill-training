@@ -38,14 +38,14 @@
   <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/framework.png" width="960" alt="把人类剧本压缩为大纲，借助技能库重建剧本，与原稿比较，再更新相关技能，形成循环。"></a>
 </p>
 
-| 环节 | 做什么 | 对应脚本 |
+| 环节 | 做什么 | 运行命令 |
 | :--- | :--- | :--- |
-| **加噪** | 保留故事大纲，去掉对白、动作和节奏等写作细节。 | [`s1_diffuse.py`](s1_diffuse.py) |
-| **重建** | 读取相关技能卡片，从大纲生成剧本。 | [`s2_forward.py`](s2_forward.py) |
-| **比较** | 对照生成稿与人类原稿，用文字指出差距。 | [`s3_loss.py`](s3_loss.py) |
-| **更新** | 归并多部作品的反馈，再分成连续的小步修改技能库。 | [`s4_backward.py`](s4_backward.py) |
+| **加噪** | 保留故事大纲，去掉对白、动作和节奏等写作细节。 | [`python -m skilltrain diffuse`](skilltrain/workflows/s1_diffuse.py) |
+| **重建** | 读取相关技能卡片，从大纲生成剧本。 | [`python -m skilltrain forward`](skilltrain/workflows/s2_forward.py) |
+| **比较** | 对照生成稿与人类原稿，用文字指出差距。 | [`python -m skilltrain loss`](skilltrain/workflows/s3_loss.py) |
+| **更新** | 根据反馈修改技能库。 | [`python -m skilltrain backward`](skilltrain/workflows/s4_backward.py) |
 
-[`s0_prepare_data.py`](s0_prepare_data.py) 负责准备数据；[`s5_train.py`](s5_train.py) 串起训练循环、保存过程记录，并支持中断后继续运行。
+[`python -m skilltrain prepare`](skilltrain/workflows/s0_prepare_data.py) 负责准备数据；[`python -m skilltrain train`](skilltrain/workflows/s5_train.py) 串起训练循环、保存过程记录，并支持中断后继续运行。
 
 ## 论文实验结果
 
@@ -89,7 +89,7 @@ Sonnet 学到的技能库也能改善 Kimi K2.6 和 Claude Opus 4.8。使用 Son
 
 ### 1. 准备环境
 
-需要 Python 3.10+、Git，以及已安装并完成认证的 [Claude Code](https://claude.com/claude-code) 命令行工具。框架**只使用 Python 标准库**，无需安装第三方 Python 包。以下命令用 [uv](https://docs.astral.sh/uv/) 创建本地环境。
+需要 Python 3.10+、Git，以及已安装并完成认证的 [Claude Code](https://claude.com/claude-code) 命令行工具。框架**只使用 Python 标准库**，无需安装第三方 Python 包。在仓库根目录运行以下命令，不需要安装项目本身；这里用 [uv](https://docs.astral.sh/uv/) 创建本地环境。
 
 ```bash
 git clone https://github.com/skilltraining-project/skill-training
@@ -106,14 +106,14 @@ python -m unittest discover tests
 
 ```bash
 bash data/get_example.sh
-python s0_prepare_data.py --pdf data/example/source.pdf --episodes 20
-python s1_diffuse.py --work data/example --only 1 --force
+python -m skilltrain prepare --pdf data/example/source.pdf --episodes 20
+python -m skilltrain diffuse --work data/example --only 1 --force
 ```
 
 示例剧本为 **Valkaama**，采用 CC BY-SA 3.0 许可，详见[数据来源与署名](data/README.md)。先检查切分后的剧集和打印出来的大纲。如需调整，修改 [`prompts/diffuse_heavy.md`](prompts/diffuse_heavy.md)，再生成完整输入：
 
 ```bash
-python s1_diffuse.py --work data/example --noise heavy --force
+python -m skilltrain diffuse --work data/example --noise heavy --force
 ```
 
 `--only 1 --force` 会更新单章缓存并打印结果，但不会替换完整的 `story.md`。全量命令加上 `--force`，可以让修改后的提示词也应用到此前已缓存的章节。
@@ -121,7 +121,7 @@ python s1_diffuse.py --work data/example --noise heavy --force
 ### 3. 开始训练，查看学到的技能
 
 ```bash
-python s5_train.py --work data/example \
+python -m skilltrain train --work data/example \
   --run-id demo --steps 4 --episodes-per-step 5
 
 git -C runs/demo/memory log --oneline
@@ -136,17 +136,15 @@ git -C runs/demo/memory show HEAD
 
 ```text
 skill-training/
-├── s0_prepare_data.py       提取文字并切分剧集
-├── s1_diffuse.py            从人类剧本生成故事大纲
-├── s2_forward.py            借助技能库重建剧本
-├── s3_loss.py               对照生成稿与人类原稿
-├── s4_backward.py           归并反馈并更新技能
-├── s5_train.py              编排训练流程，支持续跑
-├── skilltrain/              智能体调用、数据、记忆与轨迹工具
+├── skilltrain/              训练包与共用工具
+│   ├── __main__.py         统一命令入口
+│   ├── workflows/          按顺序编号的流程实现
+│   └── …                   智能体调用、数据、记忆与轨迹工具
 ├── prompts/                七份可编辑的任务与训练模板
 ├── tests/                  离线检查
 ├── data/                   示例下载脚本与数据说明
-└── docs/                   使用指南与论文图片
+├── docs/                   使用指南与论文图片
+└── pyproject.toml          项目配置
 ```
 
 每次训练的产物保存在 `runs/<run-id>/`：生成的剧本、文字反馈、智能体的文件读取记录，以及自带 Git 历史的技能库。每个技能更新小步都保留修改前后的技能库、文件差异和完成后的提交记录。

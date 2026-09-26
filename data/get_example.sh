@@ -58,4 +58,4 @@ fi
 echo "ok: $OUT"
 echo
 echo "next:"
-echo "  python3 s0_prepare_data.py --pdf data/example/source.pdf --episodes 20"
+echo "  python -m skilltrain prepare --pdf data/example/source.pdf --episodes 20"

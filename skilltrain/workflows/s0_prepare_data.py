@@ -6,7 +6,7 @@ extracts the text, finds the scene boundaries, and groups scenes into episodes
 of roughly equal length, so that each step of training covers a comparable
 stretch of story.
 
-    python s0_prepare_data.py --pdf data/example/source.pdf --episodes 20
+    python -m skilltrain prepare --pdf data/example/source.pdf --episodes 20
 
 PDFs go through `pdftotext -layout`, which keeps the indentation that screenplay
 format depends on. Install it with `brew install poppler` or
@@ -101,15 +101,16 @@ def group(scenes: list[str], count: int) -> list[list[str]]:
     return episodes
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain prepare", description=__doc__.split("\n")[2])
     source = parser.add_mutually_exclusive_group(required=True)
     source.add_argument("--pdf", type=Path)
     source.add_argument("--text", type=Path)
     parser.add_argument("--work", type=Path, default=None,
                         help="output directory (default: alongside the source)")
     parser.add_argument("--episodes", type=int, default=20)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     if args.episodes < 1:
         raise SystemExit("--episodes must be at least 1")
 

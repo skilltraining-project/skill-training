@@ -11,7 +11,7 @@ relevant. Which ones it opened is recorded, and that record is what makes credit
 assignment possible two steps later -- a rule can only be blamed for a screenplay
 it was actually present for.
 
-    python s2_forward.py --work data/example --out runs/demo/epoch_00/step_00/example \\
+    python -m skilltrain forward --work data/example --out runs/demo/epoch_00/step_00/example \\
         --pool runs/demo/memory --first 1 --last 5
 """
 
@@ -115,8 +115,9 @@ def is_done(out_dir: Path, first: int, last: int) -> bool:
     return scripts and (out_dir / "forward_reads.txt").exists()
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain forward", description=__doc__.split("\n")[2])
     parser.add_argument("--work", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--pool", required=True, type=Path)
@@ -124,7 +125,7 @@ def main() -> None:
     parser.add_argument("--last", type=int, required=True)
     parser.add_argument("--model", default=None)
     parser.add_argument("--timeout", type=int, default=2400)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     work = dataset.load(args.work)
     ok = run(work=work, out_dir=args.out.resolve(), pool=args.pool.resolve(),
              first=args.first, last=args.last, model=args.model,

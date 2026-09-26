@@ -40,12 +40,12 @@ Tsinghua University · Shanghai AI Laboratory · The Hong Kong University of Sci
 
 | Stage | What happens | Entry point |
 | :--- | :--- | :--- |
-| **Corrupt** | Remove craft-level detail while preserving the story outline. | [`s1_diffuse.py`](s1_diffuse.py) |
-| **Reconstruct** | Generate a screenplay using relevant skill cards. | [`s2_forward.py`](s2_forward.py) |
-| **Compare** | Contrast the draft with the human original and describe the gaps. | [`s3_loss.py`](s3_loss.py) |
-| **Update** | Reduce feedback across works, then revise the skill library in sequential micro-steps. | [`s4_backward.py`](s4_backward.py) |
+| **Corrupt** | Remove craft-level detail while preserving the story outline. | [`python -m skilltrain diffuse`](skilltrain/workflows/s1_diffuse.py) |
+| **Reconstruct** | Generate a screenplay using relevant skill cards. | [`python -m skilltrain forward`](skilltrain/workflows/s2_forward.py) |
+| **Compare** | Contrast the draft with the human original and describe the gaps. | [`python -m skilltrain loss`](skilltrain/workflows/s3_loss.py) |
+| **Update** | Revise the skill library using the feedback. | [`python -m skilltrain backward`](skilltrain/workflows/s4_backward.py) |
 
-[`s0_prepare_data.py`](s0_prepare_data.py) prepares the source material. [`s5_train.py`](s5_train.py) runs the training loop, saves its artifacts, and resumes interrupted runs.
+[`python -m skilltrain prepare`](skilltrain/workflows/s0_prepare_data.py) prepares the source material. [`python -m skilltrain train`](skilltrain/workflows/s5_train.py) runs the training loop, saves its artifacts, and resumes interrupted runs.
 
 ## Results from the paper
 
@@ -89,7 +89,7 @@ The figures and numbers above are reported in the [paper](https://skilltraining-
 
 ### 1. Prepare the environment
 
-Use Python 3.10+, Git, and an authenticated [Claude Code](https://claude.com/claude-code) command-line installation. The framework uses **only Python’s standard library**. The commands below use [uv](https://docs.astral.sh/uv/) to create a local environment.
+Use Python 3.10+, Git, and an authenticated [Claude Code](https://claude.com/claude-code) command-line installation. The framework uses **only Python’s standard library**. Run all commands from the repository root; no package installation is needed. The commands below use [uv](https://docs.astral.sh/uv/) to create a local environment.
 
 ```bash
 git clone https://github.com/skilltraining-project/skill-training
@@ -106,14 +106,14 @@ The offline checks do not call a model. PDF extraction requires `pdftotext` (`br
 
 ```bash
 bash data/get_example.sh
-python s0_prepare_data.py --pdf data/example/source.pdf --episodes 20
-python s1_diffuse.py --work data/example --only 1 --force
+python -m skilltrain prepare --pdf data/example/source.pdf --episodes 20
+python -m skilltrain diffuse --work data/example --only 1 --force
 ```
 
 The example screenplay is **Valkaama**, licensed under CC BY-SA 3.0. See [data sources and attribution](data/README.md). Inspect the extracted episodes and the printed outline before continuing. If needed, adjust [`prompts/diffuse_heavy.md`](prompts/diffuse_heavy.md), then regenerate the full input:
 
 ```bash
-python s1_diffuse.py --work data/example --noise heavy --force
+python -m skilltrain diffuse --work data/example --noise heavy --force
 ```
 
 `--only 1 --force` refreshes the chapter cache and prints the result without replacing the assembled `story.md`. The full command uses `--force` so prompt changes also reach previously cached chapters.
@@ -121,7 +121,7 @@ python s1_diffuse.py --work data/example --noise heavy --force
 ### 3. Train and inspect the learned skills
 
 ```bash
-python s5_train.py --work data/example \
+python -m skilltrain train --work data/example \
   --run-id demo --steps 4 --episodes-per-step 5
 
 git -C runs/demo/memory log --oneline
@@ -136,17 +136,15 @@ For multi-work training, individual stages, frozen-library controls, and configu
 
 ```text
 skill-training/
-├── s0_prepare_data.py       Extract text and split it into episodes
-├── s1_diffuse.py            Build story outlines from human scripts
-├── s2_forward.py            Reconstruct scripts using the skill library
-├── s3_loss.py               Compare reconstructions with human scripts
-├── s4_backward.py           Reduce feedback and update skills
-├── s5_train.py              Orchestrate training and resume runs
-├── skilltrain/              Agent runner, data, memory, and trace utilities
+├── skilltrain/              Training package and shared utilities
+│   ├── __main__.py         Unified command-line entry point
+│   ├── workflows/          Ordered workflow implementations
+│   └── …                   Agent runner, data, memory, and trace utilities
 ├── prompts/                Seven editable task and training templates
 ├── tests/                  Offline checks
 ├── data/                   Example downloader and data instructions
-└── docs/                   Usage guides and paper figures
+├── docs/                   Usage guides and paper figures
+└── pyproject.toml          Project metadata
 ```
 
 Each run writes to `runs/<run-id>/`: generated scripts, loss reports, agent read traces, and a skill library with its own Git history. Each backward micro-step records the library before and after the update, its diff, and the completed commit.

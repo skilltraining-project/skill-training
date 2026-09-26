@@ -4,6 +4,10 @@
 
 Start with the [quick start](../README.md#quick-start) to prepare the environment and run the example. This guide covers your own data, individual stages, run artifacts, and controlled comparisons.
 
+Run the commands below from the repository root. The unified entry point is `python -m skilltrain`; no package installation is needed. Run `python -m skilltrain --help` to list commands, or append `--help` to a command to see its options.
+
+**For existing users:** the numbered scripts have moved from the repository root into `skilltrain/workflows/`. Use the unified commands below in place of the old script paths. Stage options and the locations of `data/` and `runs/` remain the same.
+
 ## Prepare your own material
 
 Use source material you have permission to process. Each work has a separate directory:
@@ -17,18 +21,18 @@ data/my-work/
 └── story.md
 ```
 
-The `human/` files are the reference episodes. `story.md` is the corrupted input produced by `s1_diffuse.py`. You can prepare episodes from a PDF or a text file:
+The `human/` files are the reference episodes. `story.md` is the corrupted input produced by `python -m skilltrain diffuse`. You can prepare episodes from a PDF or a text file:
 
 ```bash
-python s0_prepare_data.py --text /path/to/source.txt \
+python -m skilltrain prepare --text /path/to/source.txt \
   --work data/my-work --episodes 20
-python s1_diffuse.py --work data/my-work --only 1 --force
+python -m skilltrain diffuse --work data/my-work --only 1 --force
 ```
 
 Inspect the split and one outline before processing the rest. The splitter is a convenience; check that its episode boundaries suit your source. After reviewing or editing `prompts/diffuse_heavy.md`, run:
 
 ```bash
-python s1_diffuse.py --work data/my-work --noise heavy --force
+python -m skilltrain diffuse --work data/my-work --noise heavy --force
 ```
 
 `heavy` produces a sparse story outline; `light` keeps more prose detail. Noising caches chapter outputs. `--force` refreshes them, including after prompt edits. `--only` writes the selected chapter cache and prints its output, but does not replace the assembled `story.md`.
@@ -38,7 +42,7 @@ python s1_diffuse.py --work data/my-work --noise heavy --force
 Prepare each work separately, then repeat `--work`:
 
 ```bash
-python s5_train.py \
+python -m skilltrain train \
   --work data/work-a --work data/work-b \
   --run-id two-works --steps 4 --episodes-per-step 5 \
   --epochs 3 --workers 4 --group-size 4
@@ -46,7 +50,7 @@ python s5_train.py \
 
 For each step, the writer reconstructs the selected episodes using the current library. A comparison agent reads each reconstruction and its human reference. Works are grouped for feedback reduction, and each group's backward pass updates the shared library in sequence. A single-work group uses its loss report directly. Each completed backward micro-step produces a Git commit.
 
-`--workers` controls concurrent work-level jobs; `--group-size` controls how many works contribute to each library update. Both default to four. `--group-size 0` places all works in one group. The noising script has a separate `--workers` option, defaulting to eight.
+`--workers` controls concurrent work-level jobs; `--group-size` controls how many works contribute to each library update. Both default to four. `--group-size 0` places all works in one group. The `diffuse` command has a separate `--workers` option, defaulting to eight.
 
 Re-run the **same command** to resume an interrupted run. The orchestrator checks completed artifacts and skips those stages. Start a new `--run-id` when changing the experiment, its prompts, or its input. A run stores a copy of its corrupted input and rejects a changed input on resume.
 
@@ -111,9 +115,9 @@ These commands use the library created by the quick-start run. They write to a s
 
 ```bash
 mkdir -p runs/manual
-python s2_forward.py --work data/example --pool runs/demo/memory \
+python -m skilltrain forward --work data/example --pool runs/demo/memory \
   --out runs/manual/forward --first 1 --last 5
-python s3_loss.py --work data/example --scripts runs/manual/forward/scripts \
+python -m skilltrain loss --work data/example --scripts runs/manual/forward/scripts \
   --out runs/manual/loss.md --first 1 --last 5
 ```
 
@@ -135,21 +139,21 @@ For an update, create `runs/manual/batch.json` with the following content, repla
 Then run the update. This **modifies the demo library**:
 
 ```bash
-python s4_backward.py --pool runs/demo/memory \
+python -m skilltrain backward --pool runs/demo/memory \
   --batch runs/manual/batch.json --out runs/manual/backward
 ```
 
-For a batch with several works, add one entry per work. The standalone backward command uses the batch's loss reports directly; you can provide an existing reduced report with `--summary /path/to/summary.md`. In ordinary training, `s5_train.py` prepares the batch and automatically reduces feedback for multi-work groups.
+For a batch with several works, add one entry per work. The standalone backward command uses the batch's loss reports directly; you can provide an existing reduced report with `--summary /path/to/summary.md`. In ordinary training, `python -m skilltrain train` prepares the batch and automatically reduces feedback for multi-work groups.
 
 ## Compare updating and frozen libraries
 
 To isolate continued library updating, give both runs the **same initial library**, inputs, model, and prompts, and use separate run IDs. Here `runs/seed/memory` is an existing library that neither run modifies:
 
 ```bash
-python s5_train.py --work data/example --run-id updating \
+python -m skilltrain train --work data/example --run-id updating \
   --steps 4 --episodes-per-step 5 --init-pool runs/seed/memory
 
-python s5_train.py --work data/example --run-id frozen \
+python -m skilltrain train --work data/example --run-id frozen \
   --steps 4 --episodes-per-step 5 --init-pool runs/seed/memory --no-backward
 ```
 
@@ -173,7 +177,7 @@ The released implementation is tailored to screenplays. Moving to another domain
 
 ## Configuration and cost
 
-Run any entry script with `--help` for its full options. `--model` is passed through to Claude Code; if omitted, the CLI determines the model. Authentication also comes from that CLI installation and its environment.
+Run a command such as `python -m skilltrain train --help` for its full options. `--model` is passed through to Claude Code; if omitted, the CLI determines the model. Authentication also comes from that CLI installation and its environment.
 
 | Environment variable | Default | Meaning |
 | :--- | :--- | :--- |

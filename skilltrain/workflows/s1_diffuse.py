@@ -11,7 +11,7 @@ preserving story, and the training loop that follows learns the denoiser. Becaus
 the corruption is applied to a real screenplay, every training example comes
 with a ground truth for free -- no one has to label anything.
 
-    python s1_diffuse.py --work data/example --noise heavy
+    python -m skilltrain diffuse --work data/example --noise heavy
 
 Chapters are cached as they finish, so re-running only does what is missing.
 """
@@ -92,8 +92,9 @@ def run(work: dataset.Work, *, noise: str = "heavy", model: str | None = None,
     return chapters
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain diffuse", description=__doc__.split("\n")[2])
     parser.add_argument("--work", required=True, type=Path,
                         help="data directory holding human/epNN.txt")
     parser.add_argument("--noise", choices=("light", "heavy"), default="heavy",
@@ -105,7 +106,7 @@ def main() -> None:
     parser.add_argument("--model", default=None, help="passed through to the CLI")
     parser.add_argument("--workers", type=int, default=8)
     parser.add_argument("--timeout", type=int, default=1800)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     run(dataset.load(args.work), noise=args.noise, model=args.model,
         workers=args.workers, timeout=args.timeout, only=args.only,
         force=args.force)

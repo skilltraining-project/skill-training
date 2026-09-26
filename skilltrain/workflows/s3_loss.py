@@ -9,7 +9,7 @@ is the training signal -- a paragraph of prose instead of a number, but playing
 the same role: it says what to change, and it is the only thing the optimizer
 is allowed to learn from.
 
-    python s3_loss.py --work data/example --first 1 --last 5 \\
+    python -m skilltrain loss --work data/example --first 1 --last 5 \\
         --scripts runs/<id>/epoch_00/step_00/example/scripts \\
         --out runs/<id>/loss/epoch_00/step_00/example.md
 """
@@ -69,8 +69,9 @@ def run(*, work: dataset.Work, scripts_dir: Path, report_path: Path,
     return report_path
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain loss", description=__doc__.split("\n")[2])
     parser.add_argument("--work", required=True, type=Path)
     parser.add_argument("--scripts", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
@@ -78,7 +79,7 @@ def main() -> None:
     parser.add_argument("--last", type=int, required=True)
     parser.add_argument("--model", default=None)
     parser.add_argument("--timeout", type=int, default=1800)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     run(work=dataset.load(args.work), scripts_dir=args.scripts.resolve(),
         report_path=args.out.resolve(), first=args.first, last=args.last,
         model=args.model, timeout=args.timeout)

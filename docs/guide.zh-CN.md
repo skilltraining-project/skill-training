@@ -4,6 +4,10 @@
 
 先按[快速开始](../README.zh-CN.md#快速开始)准备环境、跑通示例。这里介绍如何使用自己的材料、单独运行各个阶段、检查训练记录，以及设计对照实验。
 
+以下命令均在仓库根目录运行，统一入口为 `python -m skilltrain`，不需要安装项目本身。运行 `python -m skilltrain --help` 查看命令列表，在具体命令后加 `--help` 查看该阶段的选项。
+
+**旧版迁移：**原来放在仓库根目录的编号脚本已移入 `skilltrain/workflows/`。请将旧脚本路径替换为下文的统一命令；各阶段的选项，以及 `data/`、`runs/` 的位置均不变。
+
 ## 准备自己的材料
 
 使用你有权处理的材料，每部作品放在独立目录中：
@@ -17,18 +21,18 @@ data/my-work/
 └── story.md
 ```
 
-`human/` 中保存作为参考的人类剧本；`story.md` 是 `s1_diffuse.py` 生成的、去掉创作细节后的输入。可以从 PDF 或纯文本开始：
+`human/` 中保存作为参考的人类剧本；`story.md` 是 `python -m skilltrain diffuse` 生成的、去掉创作细节后的输入。可以从 PDF 或纯文本开始：
 
 ```bash
-python s0_prepare_data.py --text /path/to/source.txt \
+python -m skilltrain prepare --text /path/to/source.txt \
   --work data/my-work --episodes 20
-python s1_diffuse.py --work data/my-work --only 1 --force
+python -m skilltrain diffuse --work data/my-work --only 1 --force
 ```
 
 先检查分集结果和第一份故事概要。自动切分只是辅助，需要确认边界适合你的材料。检查或调整 `prompts/diffuse_heavy.md` 后，再生成完整输入：
 
 ```bash
-python s1_diffuse.py --work data/my-work --noise heavy --force
+python -m skilltrain diffuse --work data/my-work --noise heavy --force
 ```
 
 `heavy` 生成精简的故事概要，`light` 保留更多叙述细节。程序会缓存各章结果；修改提示词后，用 `--force` 刷新缓存。`--only` 会写入所选章节的缓存并打印结果，但不会替换拼接后的 `story.md`。
@@ -38,7 +42,7 @@ python s1_diffuse.py --work data/my-work --noise heavy --force
 分别准备各部作品，然后重复传入 `--work`：
 
 ```bash
-python s5_train.py \
+python -m skilltrain train \
   --work data/work-a --work data/work-b \
   --run-id two-works --steps 4 --episodes-per-step 5 \
   --epochs 3 --workers 4 --group-size 4
@@ -46,7 +50,7 @@ python s5_train.py \
 
 每一步先用当前技能库重建选定集数，再让比较智能体阅读生成剧本与人类原作。随后，程序按作品分组归并反馈，各组依次更新同一个技能库。只有一部作品的分组直接使用该作品的差异报告。每次完成的技能库更新都有独立的 Git 提交。
 
-`--workers` 控制作品级任务的并发数，`--group-size` 控制每次技能更新汇总多少部作品，两者默认都是 4。`--group-size 0` 将全部作品放在同一组。生成概要的脚本另有 `--workers` 参数，默认是 8。
+`--workers` 控制作品级任务的并发数，`--group-size` 控制每次技能更新汇总多少部作品，两者默认都是 4。`--group-size 0` 将全部作品放在同一组。生成概要的 `diffuse` 命令另有 `--workers` 参数，默认是 8。
 
 中断后用**同一条命令**继续，程序会检查产物并跳过已完成阶段。更换实验设置、提示词或输入时，请使用新的 `--run-id`。每次训练会保存当时的概要副本，续跑时若发现输入改变，会拒绝继续。
 
@@ -111,9 +115,9 @@ runs/demo/
 
 ```bash
 mkdir -p runs/manual
-python s2_forward.py --work data/example --pool runs/demo/memory \
+python -m skilltrain forward --work data/example --pool runs/demo/memory \
   --out runs/manual/forward --first 1 --last 5
-python s3_loss.py --work data/example --scripts runs/manual/forward/scripts \
+python -m skilltrain loss --work data/example --scripts runs/manual/forward/scripts \
   --out runs/manual/loss.md --first 1 --last 5
 ```
 
@@ -135,21 +139,21 @@ python s3_loss.py --work data/example --scripts runs/manual/forward/scripts \
 然后运行更新。注意，这会**修改 demo 的技能库**：
 
 ```bash
-python s4_backward.py --pool runs/demo/memory \
+python -m skilltrain backward --pool runs/demo/memory \
   --batch runs/manual/batch.json --out runs/manual/backward
 ```
 
-多作品批次中，每部作品添加一条记录。单独运行更新命令时，会直接使用批次中的差异报告；也可以通过 `--summary /path/to/summary.md` 传入已有归并报告。正常训练时，`s5_train.py` 会自动准备批次，并对多作品分组归并反馈。
+多作品批次中，每部作品添加一条记录。单独运行更新命令时，会直接使用批次中的差异报告；也可以通过 `--summary /path/to/summary.md` 传入已有归并报告。正常训练时，`python -m skilltrain train` 会自动准备批次，并对多作品分组归并反馈。
 
 ## 对比持续更新与固定技能库
 
 要单独观察“继续更新技能库”带来的效果，两组应使用**同一份初始技能库**、相同输入、模型和提示词，并使用不同运行名称。下面的 `runs/seed/memory` 是已有技能库，两次运行都不会修改它：
 
 ```bash
-python s5_train.py --work data/example --run-id updating \
+python -m skilltrain train --work data/example --run-id updating \
   --steps 4 --episodes-per-step 5 --init-pool runs/seed/memory
 
-python s5_train.py --work data/example --run-id frozen \
+python -m skilltrain train --work data/example --run-id frozen \
   --steps 4 --episodes-per-step 5 --init-pool runs/seed/memory --no-backward
 ```
 
@@ -173,7 +177,7 @@ python s5_train.py --work data/example --run-id frozen \
 
 ## 配置与运行开销
 
-每个入口脚本都可以用 `--help` 查看完整选项。`--model` 原样传给 Claude Code；省略时由该命令行工具决定模型。身份认证同样使用现有的命令行登录状态及环境配置。
+可以运行 `python -m skilltrain train --help` 等命令查看各阶段的完整选项。`--model` 原样传给 Claude Code；省略时由该命令行工具决定模型。身份认证同样使用现有的命令行登录状态及环境配置。
 
 | 环境变量 | 默认值 | 含义 |
 | :--- | :--- | :--- |

@@ -18,7 +18,7 @@ group becomes one micro-step: its loss reports are reduced to a commonality
 report, and a backward pass edits the pool from it. Micro-steps share one pool,
 so they run in order, each on top of the last.
 
-    python s5_train.py --work data/example --steps 4 --episodes-per-step 5
+    python -m skilltrain train --work data/example --steps 4 --episodes-per-step 5
 
 Re-running the same command resumes: each stage checks its own artifacts and
 skips what is already there. `--no-backward` freezes the pool, and
@@ -34,9 +34,7 @@ import shutil
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-import s2_forward
-import s3_loss
-import s4_backward
+from . import s2_forward, s3_loss, s4_backward
 from skilltrain import dataset, memory, run as runlib
 
 
@@ -206,8 +204,9 @@ def train(run: runlib.Run, works: list[dataset.Work], args) -> None:
     print(f"\n=== done: {run.root} ===", flush=True)
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain train", description=__doc__.split("\n")[2])
     parser.add_argument("--work", action="append", required=True, type=Path,
                         dest="works", help="data directory; repeat for a batch")
     parser.add_argument("--steps", type=int, default=4)
@@ -229,7 +228,7 @@ def main() -> None:
     parser.add_argument("--forward-timeout", type=int, default=2400)
     parser.add_argument("--loss-timeout", type=int, default=1800)
     parser.add_argument("--backward-timeout", type=int, default=5400)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     works = [dataset.load(path) for path in args.works]
     if len({w.name for w in works}) != len(works):
@@ -239,7 +238,7 @@ def main() -> None:
                          "give them distinct basenames")
     for work in works:
         if not work.story_path.exists():
-            raise SystemExit(f"{work.story_path} is missing -- run s1_diffuse.py first")
+            raise SystemExit(f"{work.story_path} is missing -- run python -m skilltrain diffuse first")
 
     config = {"works": sorted(w.name for w in works),
               "episodes_per_step": args.episodes_per_step,

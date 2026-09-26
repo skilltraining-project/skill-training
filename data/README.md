@@ -1,7 +1,9 @@
 # Data
 
 Training data is not committed here. `data/get_example.sh` downloads it, and
-`s0_prepare_data.py` turns it into episodes.
+`python -m skilltrain prepare` turns it into episodes.
+
+Run all commands from the repository root; no package installation is needed.
 
 ## Layout
 
@@ -88,11 +90,11 @@ instead of dialogue under character names.
 ## Using your own screenplay
 
 ```bash
-python3 s0_prepare_data.py --pdf path/to/script.pdf --work data/mywork --episodes 20
-python3 s1_diffuse.py --work data/mywork
+python -m skilltrain prepare --pdf path/to/script.pdf --work data/mywork --episodes 20
+python -m skilltrain diffuse --work data/mywork
 ```
 
-`s0` prints how each episode came out. Read a couple of the files before
+`prepare` prints how each episode came out. Read a couple of the files before
 training. If the extraction mangled the layout, everything downstream inherits
 the damage, and a bad ground truth is worse than no ground truth. Scans with no
 text layer will not work. OCR them first.

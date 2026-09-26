@@ -18,10 +18,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-import s0_prepare_data  # noqa: E402
-import s2_forward  # noqa: E402
-import s4_backward  # noqa: E402
-import s5_train  # noqa: E402
+from skilltrain.workflows import s0_prepare_data  # noqa: E402
+from skilltrain.workflows import s2_forward  # noqa: E402
+from skilltrain.workflows import s4_backward  # noqa: E402
+from skilltrain.workflows import s5_train  # noqa: E402
 from skilltrain import dataset, memory, prompts, run, trajectory  # noqa: E402
 
 GOOD = """---

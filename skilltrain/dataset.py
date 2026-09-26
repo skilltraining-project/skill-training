@@ -86,5 +86,5 @@ def chapters_from(story_path: Path, first: int, last: int) -> str:
 def load(root: Path) -> Work:
     work = Work(root=root.resolve())
     if not work.human_dir.is_dir():
-        raise SystemExit(f"{work.human_dir} does not exist -- run s0_prepare_data.py first")
+        raise SystemExit(f"{work.human_dir} does not exist -- run python -m skilltrain prepare first")
     return work

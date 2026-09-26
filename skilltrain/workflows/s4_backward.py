@@ -21,7 +21,7 @@ Three checks stand between the agent and a finished step: the linter passes, a
 commit actually exists, and the working tree is clean. Only then is `commit.txt`
 written -- which is also what tells a resumed run that this step is done.
 
-    python s4_backward.py --batch runs/.../backward/batch.json \\
+    python -m skilltrain backward --batch runs/.../backward/batch.json \\
         --pool runs/demo/memory --out runs/.../backward --label "epoch 0 step 0"
 """
 
@@ -188,8 +188,9 @@ def run(*, pool: Path, samples: list[dict], out_dir: Path, label: str,
     return ok
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__.split("\n")[2])
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        prog="python -m skilltrain backward", description=__doc__.split("\n")[2])
     parser.add_argument("--batch", required=True, type=Path)
     parser.add_argument("--pool", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
@@ -198,7 +199,7 @@ def main() -> None:
                         help="a commonality report from reduce, if there is one")
     parser.add_argument("--model", default=None)
     parser.add_argument("--timeout", type=int, default=5400)
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     ok = run(pool=args.pool.resolve(), samples=load_batch(args.batch.resolve()),
              out_dir=args.out.resolve(), label=args.label,
              summary=args.summary.resolve() if args.summary else None,
