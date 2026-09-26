@@ -33,6 +33,11 @@ patch:
   already exists but the writer never opened it, that is a routing problem: fix
   the description so it gets found, rather than writing a second copy.
 
+This step may be split into several micro-steps, one per group of works, all
+editing the same pool in turn. Earlier micro-steps may already have acted on
+other works. Before you edit, run `git -C {{pool_dir}} log -5 --stat` to see
+what changed, and do not redo an edit that is already there.
+
 When the step holds only one work, you have nothing to cross-check against, so
 raise the bar instead. Act only on differences the report states plainly and
 returns to more than once, and prefer narrowing an existing rule to writing a

@@ -11,6 +11,12 @@ mini-batch SGD does. A difference that appears in four stories at once is worth
 acting on. A difference that appears in one is usually that story's genre, and
 acting on it would overfit the pool to a single example.
 
+With many works, one agent cannot read every loss report, so the step is split
+into micro-steps. `reduce` first folds a small group of reports into one
+commonality report, and each micro-step then edits the pool from one such
+summary. The micro-steps run one after another on the same pool, so a later one
+sees what the earlier ones already changed.
+
 Three checks stand between the agent and a finished step: the linter passes, a
 commit actually exists, and the working tree is clean. Only then is `commit.txt`
 written -- which is also what tells a resumed run that this step is done.
@@ -28,7 +34,7 @@ import subprocess
 from pathlib import Path
 
 from skilltrain import memory, prompts
-from skilltrain.agent import run_agent
+from skilltrain.agent import AgentError, run_agent, run_text
 
 REQUIRED_KEYS = ("work", "first", "last", "loss_report", "reads", "trajectory")
 
@@ -45,9 +51,38 @@ def load_batch(path: Path) -> list[dict]:
     return samples
 
 
-def batch_section(samples: list[dict]) -> str:
+def reduce(*, samples: list[dict], out_path: Path, model: str | None = None,
+           timeout: int = 1800) -> Path:
+    """Fold a group's loss reports into one commonality report."""
+    sections = []
+    for sample in samples:
+        text = Path(sample["loss_report"]).read_text(encoding="utf-8")
+        sections.append(f"## {sample['work']} (episodes "
+                        f"{sample['first']}-{sample['last']})\n\n{text.strip()}")
+    prompt = prompts.render("reduce", n=len(samples),
+                            reports_section="\n\n".join(sections))
+    names = ", ".join(s["work"] for s in samples)
+    print(f"[reduce] {names}, prompt {len(prompt):,} chars", flush=True)
+    try:
+        summary = run_text(prompt, model=model, timeout=timeout)
+    except AgentError as e:
+        raise SystemExit(f"[reduce] failed: {e}") from e
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(summary + "\n", encoding="utf-8")
+    print(f"[reduce] wrote {out_path} ({out_path.stat().st_size:,} bytes)", flush=True)
+    return out_path
+
+
+def batch_section(samples: list[dict], summary: Path | None = None) -> str:
     """The evidence list the optimizer is handed, one block per work."""
     blocks = []
+    if summary is not None:
+        blocks.append(
+            f"### Commonality report for this micro-step\n"
+            f"- `{summary}`\n\n"
+            "Start here. It folds the loss reports below into one summary and "
+            "names the works behind every pattern. Open an individual loss report "
+            "only when you need the original evidence.")
     for sample in samples:
         blocks.append(
             f"### {sample['work']} (episodes {sample['first']}-{sample['last']})\n"
@@ -74,7 +109,8 @@ def snapshot(pool: Path, dest: Path) -> None:
 
 
 def run(*, pool: Path, samples: list[dict], out_dir: Path, label: str,
-        model: str | None = None, timeout: int = 5400, retries: int = 2) -> bool:
+        summary: Path | None = None, model: str | None = None,
+        timeout: int = 5400, retries: int = 2) -> bool:
     """Run one backward pass. True when every check passed."""
     out_dir.mkdir(parents=True, exist_ok=True)
     lint_report = out_dir / "lint_report.txt"
@@ -97,7 +133,7 @@ def run(*, pool: Path, samples: list[dict], out_dir: Path, label: str,
     prompt = prompts.render(
         "backward",
         pool_dir=pool,
-        batch_section=batch_section(samples),
+        batch_section=batch_section(samples, summary),
         memory_headers=memory.headers(pool),
         lint_section=lint_section(pool, lint_report),
         memory_policy=prompts.render(
@@ -158,11 +194,15 @@ def main() -> None:
     parser.add_argument("--pool", required=True, type=Path)
     parser.add_argument("--out", required=True, type=Path)
     parser.add_argument("--label", default="manual")
+    parser.add_argument("--summary", type=Path, default=None,
+                        help="a commonality report from reduce, if there is one")
     parser.add_argument("--model", default=None)
     parser.add_argument("--timeout", type=int, default=5400)
     args = parser.parse_args()
     ok = run(pool=args.pool.resolve(), samples=load_batch(args.batch.resolve()),
-             out_dir=args.out.resolve(), label=args.label, model=args.model,
+             out_dir=args.out.resolve(), label=args.label,
+             summary=args.summary.resolve() if args.summary else None,
+             model=args.model,
              timeout=args.timeout)
     raise SystemExit(0 if ok else 1)
 

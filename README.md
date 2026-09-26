@@ -4,7 +4,7 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-[![tests](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml)
+[![tests](https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
@@ -20,6 +20,22 @@ backward  a second agent reads the comparison and edits the notes
 
 Run that in a loop. Every step of the training is a commit, so you can read the
 whole thing in `git log`.
+
+This is the reference implementation of the paper
+**[Skill Training with Corruption and Reconstruction Loop](https://arxiv.org/abs/2607.27557)**.
+The paper and this code use different words for the same parts:
+
+| paper | this repository |
+|---|---|
+| skill library, or memory | the pool, `runs/<id>/memory/` |
+| rule card | one entry, one `.md` file |
+| expert folders | the three folders in the pool |
+| corruption step | `s1_diffuse.py` |
+| reconstruction by the script agent | the forward pass, `s2_forward.py` |
+| loss agent | `s3_loss.py` |
+| reduce step and commonality report | `reduce` in `s4_backward.py` |
+| backward credit assignment, one micro-step | `s4_backward.py` |
+| training with data-parallel micro-steps | `s5_train.py --group-size` |
 
 ---
 
@@ -79,6 +95,14 @@ It has four moves:
 
 Then it commits. That commit is the step.
 
+With more than a few works, one agent cannot read every loss report, so a step
+is split into **micro-steps**. The works are cut into groups of four
+(`--group-size`). Each group's loss reports are first reduced into one
+commonality report, which keeps a pattern only when it appears in more than one
+work, unless it belongs to a genre. One backward pass then edits the pool from
+that report and commits. The micro-steps share the pool and run in order, so
+each one starts from what the last one left. Every commit is one micro-step.
+
 ## Quickstart
 
 You need Python 3.10+, git, and the [Claude Code](https://claude.com/claude-code)
@@ -88,7 +112,7 @@ dependencies. Developed and tested on macOS and Linux, and it assumes a POSIX
 shell.
 
 ```bash
-git clone https://github.com/Mor-Li/skill-training && cd skill-training
+git clone https://github.com/skilltraining-project/skill-training && cd skill-training
 python3 -m unittest discover tests      # offline checks, no API calls
 ```
 
@@ -131,10 +155,12 @@ python3 s2_forward.py  --work data/example --pool runs/<id>/memory \
                       --out /tmp/fw --first 1 --last 5
 python3 s3_loss.py     --work data/example --scripts /tmp/fw/scripts \
                       --out /tmp/loss.md --first 1 --last 5
-python3 s4_backward.py --pool runs/<id>/memory --batch /tmp/batch.json --out /tmp/bw
+python3 s4_backward.py --pool runs/<id>/memory --batch /tmp/batch.json --out /tmp/bw \
+                      [--summary runs/<id>/loss/epoch_00/step_00/summary_g01.md]
 ```
 
-`s5_train.py` writes that `batch.json` for you. By hand, one entry per work:
+`s5_train.py` writes that `batch.json` for you, one per micro-step. By hand, one
+entry per work:
 
 ```json
 [{"work": "example", "first": 1, "last": 5,
@@ -239,7 +265,9 @@ runs/<run-id>/
   config.json                       what this run was started with
   memory/                           the pool, with its own git history
   input/example.md                  the noised story, as this run saw it
-  loss/epoch_00/step_00/example.md  the training signal
+  loss/epoch_00/step_00/
+    example.md                      the training signal
+    summary_g01.md                  a group's commonality report
   epoch_00/step_00/
     example/
       scripts/ep01.txt ...          what the agent wrote
@@ -247,7 +275,7 @@ runs/<run-id>/
       forward.jsonl                 the raw session
       forward_trajectory.md         everything it did, readable
       forward_reads.txt             which rules were open while it wrote
-    backward/
+    backward/g01/                   one micro-step, one per group
       batch.json                    what the optimizer was given
       backward_prompt.md            exactly what it was told
       backward.jsonl                the raw session
@@ -258,8 +286,8 @@ runs/<run-id>/
       commit.txt                    written only after every check passed
 ```
 
-The loss reports sit in their own directory rather than beside the screenplays.
-They quote the human original, and the forward agent works inside a step
+The loss reports and the commonality reports sit in their own directory rather
+than beside the screenplays. They quote the human original, and the forward agent works inside a step
 directory, so keeping the two apart is what stops a second epoch from finding
 the first epoch's answer key next door. After every forward pass the read trace
 is checked against that directory and against `data/<work>/human/`, and a pass
@@ -362,11 +390,26 @@ project never reads an API key.
 
 ## Where this came from
 
-This is a stripped-down, open-source version of a larger private system that trains
-screenwriting agents on a proprietary corpus. The mechanism is the same. The
-data, the production video pipeline, and the evaluation harness are not here.
-What is here is the part worth reusing: the loop, the pool, and the idea that
-you can do gradient descent on writing.
+The experiments in the paper ran on a larger private system that trains
+screenwriting agents on a proprietary corpus of short-drama screenplays. This
+repository is that training loop, stripped down: the corruption step, the three
+agents, the reduce step and the micro-steps, the pool and its linter. The
+screenplays cannot be shared, so the paper's numbers cannot be reproduced from
+here. The evaluation harness and the baselines are not included either. What is
+here is the part worth reusing: the loop, the pool, and the idea that you can do
+gradient descent on writing.
+
+## Citation
+
+```bibtex
+@misc{li2026skilltraining,
+  title         = {Skill Training with Corruption and Reconstruction Loop},
+  author        = {Li, Mo and Yin, Zixin and Wu, Qihao and Cao, Ting and Liu, Yunxin and Shum, Heung-Yeung},
+  year          = {2026},
+  eprint        = {2607.27557},
+  archivePrefix = {arXiv}
+}
+```
 
 ## License
 

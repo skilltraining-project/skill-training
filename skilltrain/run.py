@@ -37,9 +37,12 @@ from dataclasses import dataclass
 from pathlib import Path
 
 CONFIG_NAME = "config.json"
+# Works per micro-step. Four is what the paper used.
+DEFAULT_GROUP_SIZE = 4
 # Changing any of these mid-run would make the pool's history meaningless, so a
 # resume that disagrees on them stops instead of silently continuing.
-PINNED = ("works", "episodes_per_step", "model", "no_backward", "init_pool")
+PINNED = ("works", "episodes_per_step", "model", "no_backward", "init_pool",
+          "group_size")
 
 
 @dataclass(frozen=True)
@@ -82,8 +85,16 @@ class Run:
     def work_dir(self, epoch: int, step: int, work: str) -> Path:
         return self.step_dir(epoch, step) / work
 
-    def backward_dir(self, epoch: int, step: int) -> Path:
-        return self.step_dir(epoch, step) / "backward"
+    def summary_path(self, epoch: int, step: int, group: int) -> Path:
+        """A micro-step's commonality report. It quotes the loss reports, which
+        quote the human screenplay, so it lives beside them and not in a step
+        directory."""
+        return (self.loss_dir / f"epoch_{epoch:02d}" / f"step_{step:02d}"
+                / f"summary_g{group:02d}.md")
+
+    def backward_dir(self, epoch: int, step: int, group: int) -> Path:
+        """One micro-step: one group's backward pass."""
+        return self.step_dir(epoch, step) / "backward" / f"g{group:02d}"
 
     def episodes(self, step: int) -> tuple[int, int]:
         """Which episodes this step covers, 1-based and inclusive."""
@@ -136,6 +147,8 @@ def auto_run_id(config: dict) -> str:
     works = len(config["works"])
     model = (config.get("model") or "default").replace("claude-", "").replace("/", "-")
     name = f"{works}w_e{config['episodes_per_step']}_{model}"
+    if config.get("group_size", DEFAULT_GROUP_SIZE) != DEFAULT_GROUP_SIZE:
+        name += f"_g{config['group_size']}"
     if config.get("init_pool"):
         name += "_seeded"
     return name + ("_frozen" if config.get("no_backward") else "")

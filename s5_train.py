@@ -6,12 +6,17 @@ Runs the other four in the order that makes them a training loop:
     for each epoch:
         for each step:
             for each work:  forward  ->  loss          (in parallel)
-            one backward over all of them             (updates the pool)
+            for each group of works:                  (one after another)
+                reduce its loss reports into one summary
+                one backward micro-step               (updates the pool)
 
 A step covers a fixed stretch of episodes across every work, so the works move
 through the story together. Forward and loss are independent per work and run
-concurrently. Backward is single and last, because every work's evidence has
-to be on the table before the pool is allowed to change.
+concurrently. The pool only changes after every work's evidence is on the table.
+Then the works are split into groups (`--group-size`, four by default), and each
+group becomes one micro-step: its loss reports are reduced to a commonality
+report, and a backward pass edits the pool from it. Micro-steps share one pool,
+so they run in order, each on top of the last.
 
     python s5_train.py --work data/example --steps 4 --episodes-per-step 5
 
@@ -117,6 +122,54 @@ def seed_pool(run: runlib.Run, source: Path) -> None:
     print(f"[pool] seeded {len(entries)} entries from {source}", flush=True)
 
 
+def make_groups(items: list, size: int) -> list[list]:
+    """Split into consecutive groups of `size`. Zero or less means one group."""
+    if size <= 0:
+        return [list(items)] if items else []
+    return [list(items[i:i + size]) for i in range(0, len(items), size)]
+
+
+def backward_step(run: runlib.Run, active: list[dataset.Work], batch: list[dict],
+                  epoch: int, step: int, args) -> None:
+    """Every micro-step of one training step, in order."""
+    done = {sample["work"]: sample for sample in batch}
+    # Group the works that were scheduled, not the ones that happened to succeed,
+    # so a resume after a failed forward pass rebuilds the same groups.
+    plan = make_groups([w.name for w in active], args.group_size)
+    for group_id, names in enumerate(plan, 1):
+        label = f"epoch {epoch} step {step} micro {group_id}/{len(plan)}"
+        samples = [done[name] for name in names if name in done]
+        out_dir = run.backward_dir(epoch, step, group_id)
+        if not samples:
+            print(f"[backward] {label}: every work in this group failed, skipping",
+                  flush=True)
+            continue
+        if (out_dir / "commit.txt").exists():
+            print(f"[skip] backward {label}", flush=True)
+            continue
+
+        summary = None
+        if len(samples) > 1:
+            # A single report has nothing to find in common with, and the
+            # backward prompt already knows how to read one on its own.
+            summary = run.summary_path(epoch, step, group_id)
+            if summary.exists():
+                print(f"[skip] reduce {label}", flush=True)
+            else:
+                s4_backward.reduce(samples=samples, out_path=summary,
+                                   model=args.model, timeout=args.loss_timeout)
+
+        out_dir.mkdir(parents=True, exist_ok=True)
+        (out_dir / "batch.json").write_text(json.dumps(samples, indent=2) + "\n",
+                                            encoding="utf-8")
+        if not s4_backward.run(pool=run.pool, samples=samples, out_dir=out_dir,
+                               label=label, summary=summary, model=args.model,
+                               timeout=args.backward_timeout):
+            # A failed backward leaves the pool in an unknown state, and every
+            # later micro-step would build on it. Stop and let a human look.
+            raise SystemExit(f"backward failed at {label}")
+
+
 def train(run: runlib.Run, works: list[dataset.Work], args) -> None:
     memory.init(run.pool, run.root / "lint_report.txt")
     if args.init_pool:
@@ -148,20 +201,7 @@ def train(run: runlib.Run, works: list[dataset.Work], args) -> None:
             if args.no_backward:
                 print("[backward] skipped (--no-backward)", flush=True)
                 continue
-
-            out_dir = run.backward_dir(epoch, step)
-            if (out_dir / "commit.txt").exists():
-                print(f"[skip] backward epoch {epoch} step {step}", flush=True)
-                continue
-            out_dir.mkdir(parents=True, exist_ok=True)
-            (out_dir / "batch.json").write_text(json.dumps(batch, indent=2) + "\n",
-                                                encoding="utf-8")
-            if not s4_backward.run(pool=run.pool, samples=batch, out_dir=out_dir,
-                                   label=f"epoch {epoch} step {step}",
-                                   model=args.model, timeout=args.backward_timeout):
-                # A failed backward leaves the pool in an unknown state, and every
-                # later step would build on it. Stop and let a human look.
-                raise SystemExit(f"backward failed at epoch {epoch} step {step}")
+            backward_step(run, active, batch, epoch, step, args)
 
     print(f"\n=== done: {run.root} ===", flush=True)
 
@@ -175,6 +215,9 @@ def main() -> None:
     parser.add_argument("--epochs", type=int, default=1)
     parser.add_argument("--workers", type=int, default=4,
                         help="works running forward+loss at once")
+    parser.add_argument("--group-size", type=int, default=runlib.DEFAULT_GROUP_SIZE,
+                        help="works per backward micro-step; 0 puts every work "
+                             "in one")
     parser.add_argument("--no-backward", action="store_true",
                         help="freeze the pool: no backward pass, no updates")
     parser.add_argument("--init-pool", type=Path, default=None,
@@ -202,6 +245,7 @@ def main() -> None:
               "episodes_per_step": args.episodes_per_step,
               "steps": args.steps, "epochs": args.epochs,
               "model": args.model, "no_backward": args.no_backward,
+              "group_size": args.group_size,
               "init_pool": str(args.init_pool.resolve()) if args.init_pool else None}
     run_id = args.run_id or runlib.auto_run_id(config)
     run = runlib.open_run(args.runs_dir.resolve() / run_id, config)

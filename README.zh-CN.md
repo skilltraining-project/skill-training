@@ -4,7 +4,7 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-[![tests](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/Mor-Li/skill-training/actions/workflows/test.yml)
+[![tests](https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg)](https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml)
 ![python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 ![dependencies](https://img.shields.io/badge/dependencies-none-lightgrey)
@@ -19,6 +19,22 @@ backward  另一个 agent 读对比报告，动手改笔记
 ```
 
 这么循环下去，笔记会越来越好。每一步训练都记在 `git log` 里，可以逐条读。
+
+这是论文
+**[Skill Training with Corruption and Reconstruction Loop](https://arxiv.org/abs/2607.27557)**
+的参考实现。论文和代码对同一样东西的叫法不一样，对照如下：
+
+| 论文里 | 这个仓库里 |
+|---|---|
+| 技能库（skill library），也叫记忆 | 池子，`runs/<id>/memory/` |
+| 规则卡 | 一个条目，一个 `.md` 文件 |
+| 专家文件夹 | 池子里的三个文件夹 |
+| 加噪步骤 | `s1_diffuse.py` |
+| 剧本智能体从大纲重建剧本 | forward，`s2_forward.py` |
+| 损失智能体 | `s3_loss.py` |
+| 归并步骤与共性报告 | `s4_backward.py` 里的 `reduce` |
+| 反向信用分配，一个微步 | `s4_backward.py` |
+| 数据并行的微步训练 | `s5_train.py --group-size` |
 
 ---
 
@@ -67,13 +83,19 @@ backward 是唯一有权写笔记的角色。它拿到的除了 loss 报告，�
 
 改完提交。这个 commit 就是一步。
 
+作品一多，一个 agent 读不完所有 loss 报告，所以一步会拆成几个**微步**。
+作品按四部一组切开（`--group-size`）。每组的 loss 报告先归并成一份共性报告：
+一个问题要在不止一部作品里出现才留下，只属于某个题材的写法除外。
+然后一次 backward 照着这份报告改池子、提交。几个微步共用一个池子，按顺序跑，
+后一个接着前一个改完的样子往下改。每个 commit 就是一个微步。
+
 ## 快速开始
 
 需要 Python 3.10+ 和登录好的 [Claude Code](https://claude.com/claude-code) CLI。
 没了。没有任何 Python 依赖。在 macOS 和 Linux 上开发和测试，假设有 POSIX shell。
 
 ```bash
-git clone https://github.com/Mor-Li/skill-training && cd skill-training
+git clone https://github.com/skilltraining-project/skill-training && cd skill-training
 python3 -m unittest discover tests      # 离线自检，不调 API
 ```
 
@@ -114,10 +136,11 @@ python3 s2_forward.py  --work data/example --pool runs/<id>/memory \
                       --out /tmp/fw --first 1 --last 5
 python3 s3_loss.py     --work data/example --scripts /tmp/fw/scripts \
                       --out /tmp/loss.md --first 1 --last 5
-python3 s4_backward.py --pool runs/<id>/memory --batch /tmp/batch.json --out /tmp/bw
+python3 s4_backward.py --pool runs/<id>/memory --batch /tmp/batch.json --out /tmp/bw \
+                      [--summary runs/<id>/loss/epoch_00/step_00/summary_g01.md]
 ```
 
-那个 `batch.json` 平时是 `s5_train.py` 自动写的。想手写的话，一个 work 一条：
+那个 `batch.json` 平时是 `s5_train.py` 自动写的，每个微步一份。想手写的话，一个 work 一条：
 
 ```json
 [{"work": "example", "first": 1, "last": 5,
@@ -210,7 +233,9 @@ runs/<run-id>/
   config.json                       这次是用什么参数起的
   memory/                           池子本体，自带 git 历史
   input/example.md                  加噪后的故事，这次 run 看到的那一份
-  loss/epoch_00/step_00/example.md  训练信号
+  loss/epoch_00/step_00/
+    example.md                      训练信号
+    summary_g01.md                  一组的共性报告
   epoch_00/step_00/
     example/
       scripts/ep01.txt ...          agent 写出来的剧本
@@ -218,7 +243,7 @@ runs/<run-id>/
       forward.jsonl                 原始会话
       forward_trajectory.md         它干的每一件事，可读版
       forward_reads.txt             写的时候哪几条规则是打开的
-    backward/
+    backward/g01/                   一个微步，每组一个
       batch.json                    优化器拿到了什么
       backward_trajectory.md        它的推理过程
       memory_before/ memory_after/  这一步前后的池子
@@ -226,7 +251,7 @@ runs/<run-id>/
       commit.txt                    所有检查都过了才会写
 ```
 
-loss 报告单独放一个目录，不跟剧本挨着。因为报告里会引用人类原稿，
+loss 报告和共性报告单独放一个目录，不跟剧本挨着。因为报告里会引用人类原稿，
 而 forward agent 干活的位置就在 step 目录里——把两者隔开，
 第二个 epoch 才不会在隔壁翻到第一个 epoch 的标准答案。
 每次 forward 跑完还会拿 read trace 去比对那个目录和 `data/<work>/human/`，
@@ -311,10 +336,23 @@ agent 是带 `--dangerously-skip-permissions` 跑的，这也是这个循环能�
 
 ## 这东西哪来的
 
-它是一套更大的私有系统的开源提炼版——那套系统在专有语料上训练剧本 agent。
-机制是同一套。数据、视频生产链路、评测 harness 都不在这里。
+论文里的实验跑在一套更大的私有系统上，那套系统用一批不公开的短剧剧本训练编剧 agent。
+这个仓库就是那条训练循环的精简版：加噪步骤、三个 agent、归并和微步、池子和它的 linter。
+剧本没法公开，所以论文里的数字没法在这里复现，评测代码和对照方法也不在这里。
 在这里的是真正值得复用的那部分：这个循环、这个池子，
 以及"写作这件事也能做梯度下降"这个想法本身。
+
+## 引用
+
+```bibtex
+@misc{li2026skilltraining,
+  title         = {Skill Training with Corruption and Reconstruction Loop},
+  author        = {Li, Mo and Yin, Zixin and Wu, Qihao and Cao, Ting and Liu, Yunxin and Shum, Heung-Yeung},
+  year          = {2026},
+  eprint        = {2607.27557},
+  archivePrefix = {arXiv}
+}
+```
 
 ## 许可
 

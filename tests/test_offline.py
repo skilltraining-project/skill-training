@@ -20,6 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import s0_prepare_data  # noqa: E402
 import s2_forward  # noqa: E402
+import s4_backward  # noqa: E402
 import s5_train  # noqa: E402
 from skilltrain import dataset, memory, prompts, run, trajectory  # noqa: E402
 
@@ -146,6 +147,7 @@ class TestPrompts(unittest.TestCase):
             "memory_policy": dict(folder_guide="g", body_heading="## Rules",
                                   max_lines=50, max_body_chars=4800,
                                   max_description_chars=800),
+            "reduce": dict(n=2, reports_section="## a\n\nr"),
             "backward": dict(pool_dir="/p", batch_section="b",
                              memory_headers="h", lint_section="l", memory_policy="p",
                              folder_add_targets="a b", commit_subject="s",
@@ -496,10 +498,44 @@ class TestRunDirectory(TempCase):
         self.assertEqual(run.open_run(root, {**self.CONFIG, "steps": 8})
                          .config["steps"], 8)
 
+    def test_summaries_live_with_the_loss_reports(self):
+        """A summary quotes the human screenplay, so the writer must not find it."""
+        r = run.open_run(self.tmp / "runs" / "demo", dict(self.CONFIG))
+        summary = r.summary_path(0, 0, 1)
+        self.assertTrue(summary.is_relative_to(r.loss_dir))
+        self.assertFalse(summary.is_relative_to(r.step_dir(0, 0)))
+
+    def test_a_non_default_group_size_gets_its_own_id(self):
+        self.assertNotEqual(run.auto_run_id({**self.CONFIG, "group_size": 2}),
+                            run.auto_run_id({**self.CONFIG, "group_size": 4}))
+
+    def test_changing_the_group_size_refuses_to_resume(self):
+        root = self.tmp / "runs" / "demo"
+        run.open_run(root, {**self.CONFIG, "group_size": 4})
+        with self.assertRaises(SystemExit):
+            run.open_run(root, {**self.CONFIG, "group_size": 2})
+
     def test_episode_ranges_tile_the_story(self):
         r = run.open_run(self.tmp / "runs" / "demo", dict(self.CONFIG))
         self.assertEqual([r.episodes(i) for i in range(3)],
                          [(1, 5), (6, 10), (11, 15)])
+
+
+class TestMicroSteps(unittest.TestCase):
+    def test_groups_are_consecutive_and_keep_the_remainder(self):
+        self.assertEqual(s5_train.make_groups(list("abcdefghij"), 4),
+                         [list("abcd"), list("efgh"), list("ij")])
+
+    def test_zero_puts_everything_in_one_group(self):
+        self.assertEqual(s5_train.make_groups(list("abc"), 0), [list("abc")])
+        self.assertEqual(s5_train.make_groups([], 0), [])
+
+    def test_the_summary_is_listed_before_the_works(self):
+        sample = {"work": "w", "first": 1, "last": 5, "loss_report": "/l",
+                  "reads": "/r", "trajectory": "/t"}
+        text = s4_backward.batch_section([sample], Path("/s.md"))
+        self.assertLess(text.index("/s.md"), text.index("/l"))
+        self.assertNotIn("Commonality", s4_backward.batch_section([sample]))
 
 
 if __name__ == "__main__":
