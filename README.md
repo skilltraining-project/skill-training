@@ -388,15 +388,13 @@ to use whatever your CLI is set to. Any Anthropic-compatible gateway works
 through the CLI's own `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN`. This
 project never reads an API key.
 
-## Where this came from
+## About this release
 
-The experiments in the paper ran on a larger private system that trains
-screenwriting agents on a proprietary corpus of short-drama screenplays. This
-repository is that training loop, stripped down: the corruption step, the three
-agents, the reduce step and the micro-steps, the pool and its linter. The
-screenplays cannot be shared, so the paper's numbers cannot be reproduced from
-here. The evaluation harness and the baselines are not included either. What is
-here is the part worth reusing: the loop, the pool, and the idea that you can do
+This is the research release of the method in the paper: the corruption step,
+the three agents, the reduce step and the micro-steps, the pool and its linter.
+It is kept small on purpose, with no dependencies, so that the whole loop can be
+read in an afternoon and pointed at a new kind of writing. What it carries is
+the part worth reusing: the loop, the pool, and the idea that you can do
 gradient descent on writing.
 
 ## Citation
