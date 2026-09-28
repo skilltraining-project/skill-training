@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://skilltraining-project.github.io/">项目主页</a> ·
-  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">论文 PDF</a> ·
+  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">PDF</a> ·
   <a href="https://arxiv.org/abs/2607.27557">arXiv</a> ·
   <a href="#快速开始">快速开始</a> ·
   <a href="docs/guide.zh-CN.md">使用指南</a>
