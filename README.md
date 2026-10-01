@@ -177,3 +177,5 @@ Each run writes to `runs/<run-id>/`: generated scripts, loss reports, agent read
 For questions and bug reports, [open an issue](https://github.com/skilltraining-project/skill-training/issues). For research inquiries, contact **Mo Li** at [limo.research@gmail.com](mailto:limo.research@gmail.com).
 
 Code is released under the **[MIT License](LICENSE)**. The downloaded example screenplay has its own [CC BY-SA 3.0 license and attribution](data/README.md).
+
+Related work: [Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) learns repository-specific coding skills from commit history, without updating model weights.
