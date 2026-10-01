@@ -180,4 +180,4 @@ skill-training/
 
 ## 相关工作
 
-[Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) 从历史代码提交中学习项目特有的编程技能，同样不更新模型权重。
+[NeurIPS 2026] [Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) 从历史代码提交中学习项目特有的编程技能，同样不更新模型权重。

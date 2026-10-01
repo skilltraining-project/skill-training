@@ -180,4 +180,4 @@ Code is released under the **[MIT License](LICENSE)**. The downloaded example sc
 
 ## Related Work
 
-[Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) learns repository-specific coding skills from commit history, without updating model weights.
+[NeurIPS 2026] [Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) learns repository-specific coding skills from commit history, without updating model weights.
