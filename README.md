@@ -31,9 +31,6 @@ The idea is simple: compress a professional screenplay into a story outline, ask
 
 This repository is the reference implementation of **Skill Training with Corruption and Reconstruction Loop**.
 
-**Mo Li · Zixin Yin · Qihao Wu · Ting Cao · Yunxin Liu · Heung-Yeung Shum**<br>
-Tsinghua University · Shanghai AI Laboratory · The Hong Kong University of Science and Technology · Xiaobing.AI
-
 <p align="center">
   <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/framework.png" width="960" alt="Corrupt a human screenplay into an outline, reconstruct it using a skill library, compare the result with the original, then update the relevant skills."></a>
 </p>

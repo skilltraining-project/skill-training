@@ -31,9 +31,6 @@
 
 本仓库是论文 **Skill Training with Corruption and Reconstruction Loop** 的参考实现。
 
-**Mo Li · Zixin Yin · Qihao Wu · Ting Cao · Yunxin Liu · Heung-Yeung Shum**<br>
-清华大学 · 上海人工智能实验室 · 香港科技大学 · 小冰
-
 <p align="center">
   <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/framework.png" width="960" alt="把人类剧本压缩为大纲，借助技能库重建剧本，与原稿比较，再更新相关技能，形成循环。"></a>
 </p>
