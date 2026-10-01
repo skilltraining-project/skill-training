@@ -178,4 +178,6 @@ skill-training/
 
 代码采用 **[MIT 许可](LICENSE)**。下载的示例剧本单独采用 [CC BY-SA 3.0 许可](data/README.md)，请保留对应署名。
 
-相关工作：[Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) 从历史代码提交中学习项目特有的编程技能，同样不更新模型权重。
+## 相关工作
+
+[Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) 从历史代码提交中学习项目特有的编程技能，同样不更新模型权重。

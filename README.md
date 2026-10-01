@@ -178,4 +178,6 @@ For questions and bug reports, [open an issue](https://github.com/skilltraining-
 
 Code is released under the **[MIT License](LICENSE)**. The downloaded example screenplay has its own [CC BY-SA 3.0 license and attribution](data/README.md).
 
-Related work: [Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) learns repository-specific coding skills from commit history, without updating model weights.
+## Related Work
+
+[Learning to Commit](https://github.com/LearningToCommit/LearningToCommit) learns repository-specific coding skills from commit history, without updating model weights.
