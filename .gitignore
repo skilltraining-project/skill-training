@@ -6,9 +6,9 @@ __pycache__/
 # Training output. Every run is large, and reproducible from the config in it.
 runs/
 
-# No screenplays in git. The example is CC BY-SA and the code is MIT, so the
-# example is fetched by a script instead of committed, and whatever you add
-# yourself stays out too. See data/README.md.
+# No screenplays in git. The example is CC BY-SA and the code is PolyForm
+# Noncommercial, so the example is fetched by a script instead of committed,
+# and whatever you add yourself stays out too. See data/README.md.
 data/*
 !data/README.md
 !data/get_example.sh
