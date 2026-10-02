@@ -7,14 +7,18 @@
 <p align="center">学习专业手艺，保持模型权重不变。</p>
 
 <p align="center">
-  <a href="https://skilltraining-project.github.io/">项目主页</a> ·
-  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">PDF</a> ·
-  <a href="https://arxiv.org/abs/2607.27557">arXiv</a> ·
-  <a href="#快速开始">快速开始</a> ·
-  <a href="docs/guide.zh-CN.md">使用指南</a>
+  <a href="https://skilltraining-project.github.io/">🌐 项目主页</a> ·
+  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">📄 PDF</a> ·
+  <a href="https://arxiv.org/abs/2607.27557">📑 arXiv</a> ·
+  <a href="#news">📰 新闻</a> ·
+  <a href="#快速开始">🚀 快速开始</a> ·
+  <a href="#论文实验结果">📊 实验结果</a> ·
+  <a href="docs/guide.zh-CN.md">📖 使用指南</a> ·
+  <a href="#引用">📝 引用</a>
 </p>
 
 <p align="center">
+  <a href="https://arxiv.org/abs/2607.27557"><img src="https://img.shields.io/badge/arXiv-2607.27557-b31b1b?style=flat&logo=arxiv&logoColor=white" alt="arXiv 2607.27557"></a>
   <a href="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml"><img src="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg" alt="离线测试"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10%2B-3e55a5?style=flat" alt="Python 3.10 及以上"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3e55a5?style=flat" alt="MIT 许可"></a>
@@ -23,9 +27,22 @@
 
 <p align="center"><a href="README.md">English</a> · 简体中文</p>
 
+**Skill Training 让智能体从人类已经完成的作品里学会专业手艺，模型权重全程不动。** 它先把专业剧本压缩成大纲，让智能体照着大纲重写，再把草稿和原稿之间的差距整理成可以直接阅读的技能。
+
+- **不要标注，也不要奖励。** 人类作品本身就是老师。训练不需要新的人工标注、偏好数据或外部奖励模型。
+- **技能看得懂、改得动。** 智能体学到的是一套简短的 Markdown 技能卡，每次更新都是一次 Git 提交，可以查看、回退和复用。
+- **效果可测，还能迁移。** 在 20 部短剧小说上训练后，技能库在 6 部没见过的小说共 385 集上，六项写作指标全部提升；75 次盲评中赢下 49 次，也能帮助其他模型写得更好。
+
+<a id="news"></a>
+
+## 新闻
+
+- **2026-09-26** — 💻 **代码公开。** 参考实现已经开源，附带一个可以从头训练到尾的开放许可示例，见[快速开始](#快速开始)。
+- **2026-07** — 📑 **论文挂上 arXiv。** 链接：[arXiv:2607.27557](https://arxiv.org/abs/2607.27557)。
+
 ## 项目介绍
 
-专业作品里包含许多难以直接写成指令的经验。**Skill Training 从已有的人类作品中学习这些经验**，不更新模型权重，也不需要额外收集人类标注或外部奖励。
+专业作品里包含许多难以直接写成指令的经验。Skill Training 从已有的人类作品中学习这些经验。
 
 做法很直接：先把专业剧本压缩成故事大纲，让智能体尝试重建剧本，再从它与原稿的差距中学习。训练得到的是一套外部**技能库**，由智能体写作前会阅读的 Markdown 文件组成。每次修改都保存在 Git 历史里，因此学到了什么、怎么改过，都可以查看、编辑和复用。
 

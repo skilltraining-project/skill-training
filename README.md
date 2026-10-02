@@ -7,14 +7,18 @@
 <p align="center">Learn the craft. Keep the model frozen.</p>
 
 <p align="center">
-  <a href="https://skilltraining-project.github.io/">Project page</a> ·
-  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">PDF</a> ·
-  <a href="https://arxiv.org/abs/2607.27557">arXiv</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="docs/guide.md">Guide</a>
+  <a href="https://skilltraining-project.github.io/">🌐 Project page</a> ·
+  <a href="https://skilltraining-project.github.io/assets/paper.pdf?v=473e0fa1818b">📄 PDF</a> ·
+  <a href="https://arxiv.org/abs/2607.27557">📑 arXiv</a> ·
+  <a href="#news">📰 News</a> ·
+  <a href="#quick-start">🚀 Quick start</a> ·
+  <a href="#results-from-the-paper">📊 Results</a> ·
+  <a href="docs/guide.md">📖 Guide</a> ·
+  <a href="#citation">📝 Citation</a>
 </p>
 
 <p align="center">
+  <a href="https://arxiv.org/abs/2607.27557"><img src="https://img.shields.io/badge/arXiv-2607.27557-b31b1b?style=flat&logo=arxiv&logoColor=white" alt="arXiv 2607.27557"></a>
   <a href="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml"><img src="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg" alt="Offline tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10%2B-3e55a5?style=flat" alt="Python 3.10 or newer"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3e55a5?style=flat" alt="MIT license"></a>
@@ -23,9 +27,22 @@
 
 <p align="center">English · <a href="README.zh-CN.md">简体中文</a></p>
 
+**Skill Training teaches an agent professional craft from finished human work, with the model weights frozen.** It corrupts a professional screenplay into an outline, asks the agent to rebuild it, and turns the gap between the draft and the original into readable skills.
+
+- **No labels, no rewards.** The human artifact is its own teacher. Training needs no new annotations, preference data, or external reward model.
+- **Skills you can read and edit.** What the agent learns is a library of small Markdown cards, and every update is a Git commit you can inspect, revert, or reuse.
+- **Measurable gains that transfer.** Trained on 20 short-drama novels, the library improves all six measured writing behaviors on 385 episodes from unseen novels, wins 49 of 75 blind reader judgments, and also helps other models.
+
+<a id="news"></a>
+
+## News
+
+- **2026-09-26** — 💻 **Code released.** The reference implementation is public, with an openly licensed example you can train end to end. See [Quick start](#quick-start).
+- **2026-07** — 📑 **Preprint on arXiv.** Read it at [arXiv:2607.27557](https://arxiv.org/abs/2607.27557).
+
 ## Overview
 
-Professional work contains skills that are difficult to explain as instructions. **Skill Training learns those skills from existing human artifacts**, without updating model weights or collecting new human annotations or external rewards.
+Professional work contains skills that are difficult to explain as instructions. Skill Training learns those skills from existing human artifacts.
 
 The idea is simple: compress a professional screenplay into a story outline, ask an agent to reconstruct it, and learn from the gap between its draft and the original. What improves is an external **skill library**: small Markdown files the agent reads before writing. Each update is recorded in Git, so the learned rules can be inspected, edited, and reused.
 
