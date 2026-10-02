@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Train an agent's skill library through corruption and reconstruction, without updating model weights"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { text = "MIT" }
+license = { text = "PolyForm-Noncommercial-1.0.0" }
 # No third-party packages, on purpose. The only thing this project needs that
 # is not in the standard library is the `claude` CLI, and that is a binary, not
 # an import. Nothing here has to be kept in step with an SDK release.

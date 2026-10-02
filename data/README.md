@@ -16,7 +16,7 @@ data/<work>/
 ```
 
 None of it is in git. `.gitignore` keeps everything under `data/` out except
-this file and the download script, so no screenplay ever lands in an MIT
+this file and the download script, so no screenplay ever lands in this
 repository by accident.
 
 `human/` is the answer key. The forward agent never sees it, nothing in a run
@@ -54,7 +54,7 @@ the English is European and slightly formal, with a few typos a human left in,
 so it does not read like the default register a model falls into. That makes the
 gap between the two versions easier to see.
 
-**Licence note.** The code in this repository is MIT. The screenplay is CC
+**Licence note.** The code in this repository is PolyForm Noncommercial. The screenplay is CC
 BY-SA 3.0 and is not distributed with it, which is why there is a download
 script instead of a file. If you redistribute anything derived from the
 screenplay, including the noised `story.md` or generated screenplays, ShareAlike

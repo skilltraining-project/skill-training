@@ -21,7 +21,7 @@
   <a href="https://arxiv.org/abs/2607.27557"><img src="https://img.shields.io/badge/arXiv-2607.27557-b31b1b?style=flat&logo=arxiv&logoColor=white" alt="arXiv 2607.27557"></a>
   <a href="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml"><img src="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg" alt="Offline tests"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10%2B-3e55a5?style=flat" alt="Python 3.10 or newer"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3e55a5?style=flat" alt="MIT license"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial-3e55a5?style=flat" alt="PolyForm Noncommercial license"></a>
   <a href="https://github.com/skilltraining-project/skill-training/stargazers"><img src="https://img.shields.io/github/stars/skilltraining-project/skill-training?style=flat&color=3e55a5" alt="GitHub stars"></a>
 </p>
 
@@ -190,7 +190,7 @@ Each run writes to `runs/<run-id>/`: generated scripts, loss reports, agent read
 
 For questions and bug reports, [open an issue](https://github.com/skilltraining-project/skill-training/issues). For research inquiries, contact **Mo Li** at [limo.research@gmail.com](mailto:limo.research@gmail.com).
 
-Code is released under the **[MIT License](LICENSE)**. The downloaded example screenplay has its own [CC BY-SA 3.0 license and attribution](data/README.md).
+Code is released under the **[PolyForm Noncommercial License 1.0.0](LICENSE)**: free for research, teaching and personal use. **For commercial use, please contact the author** at [limo.research@gmail.com](mailto:limo.research@gmail.com). The downloaded example screenplay has its own [CC BY-SA 3.0 license and attribution](data/README.md).
 
 ## Related Work
 

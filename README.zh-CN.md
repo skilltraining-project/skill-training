@@ -21,7 +21,7 @@
   <a href="https://arxiv.org/abs/2607.27557"><img src="https://img.shields.io/badge/arXiv-2607.27557-b31b1b?style=flat&logo=arxiv&logoColor=white" alt="arXiv 2607.27557"></a>
   <a href="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml"><img src="https://github.com/skilltraining-project/skill-training/actions/workflows/test.yml/badge.svg" alt="离线测试"></a>
   <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10%2B-3e55a5?style=flat" alt="Python 3.10 及以上"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3e55a5?style=flat" alt="MIT 许可"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-PolyForm%20Noncommercial-3e55a5?style=flat" alt="PolyForm 非商业许可"></a>
   <a href="https://github.com/skilltraining-project/skill-training/stargazers"><img src="https://img.shields.io/github/stars/skilltraining-project/skill-training?style=flat&color=3e55a5" alt="GitHub 收藏数"></a>
 </p>
 
@@ -190,7 +190,7 @@ skill-training/
 
 使用问题和缺陷反馈可以[提交 Issue](https://github.com/skilltraining-project/skill-training/issues)。研究交流请联系 **Mo Li**：[limo.research@gmail.com](mailto:limo.research@gmail.com)。
 
-代码采用 **[MIT 许可](LICENSE)**。下载的示例剧本单独采用 [CC BY-SA 3.0 许可](data/README.md)，请保留对应署名。
+代码采用 **[PolyForm 非商业许可 1.0.0](LICENSE)**，研究、教学和个人使用均可免费使用。**如需商用，请联系作者** [limo.research@gmail.com](mailto:limo.research@gmail.com)。下载的示例剧本单独采用 [CC BY-SA 3.0 许可](data/README.md)，请保留对应署名。
 
 ## 相关工作
 
