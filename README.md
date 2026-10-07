@@ -37,6 +37,7 @@
 
 ## News
 
+- **2026-10** — 🎬 **In production at scale.** Skills learned with our method now run in the **top-ranked short-drama generation pipeline on TikTok**.
 - **2026-09-26** — 💻 **Code released.** The reference implementation is public, with an openly licensed example you can train end to end. See [Quick start](#quick-start).
 - **2026-07** — 📑 **Preprint on arXiv.** Read it at [arXiv:2607.27557](https://arxiv.org/abs/2607.27557).
 
