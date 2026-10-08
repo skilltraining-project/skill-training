@@ -27,6 +27,10 @@
 
 <p align="center"><a href="README.md">English</a> · 简体中文</p>
 
+<p align="center">
+  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="22 秒的方法动画：人类剧本被压缩成大纲，剧本智能体据此重建，损失智能体找出差距，反向智能体把差距写成技能卡，结构分数随之上升。"></a>
+</p>
+
 **Skill Training 让智能体从人类已经完成的作品里学会专业手艺，模型权重全程不动。** 它先把专业剧本压缩成大纲，让智能体照着大纲重写，再把草稿和原稿之间的差距整理成可以直接阅读的技能。
 
 - **不要标注，也不要奖励。** 人类作品本身就是老师。训练不需要新的人工标注、偏好数据或外部奖励模型。
