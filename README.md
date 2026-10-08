@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/logo.png" width="88" height="88" alt="Skill Training logo">
+  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
 </p>
 
 <h1 align="center">Skill Training</h1>
@@ -26,10 +26,6 @@
 </p>
 
 <p align="center">English · <a href="README.zh-CN.md">简体中文</a></p>
-
-<p align="center">
-  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
-</p>
 
 **Skill Training teaches an agent professional craft from finished human work, with the model weights frozen.** It corrupts a professional screenplay into an outline, asks the agent to rebuild it, and turns the gap between the draft and the original into readable skills.
 
