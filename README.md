@@ -1,10 +1,10 @@
-<p align="center">
-  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
-</p>
-
 <h1 align="center">Skill Training</h1>
 
 <p align="center">Learn the craft. Keep the model frozen.</p>
+
+<p align="center">
+  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
+</p>
 
 <p align="center">
   <a href="https://skilltraining-project.github.io/">🌐 Project page</a> ·

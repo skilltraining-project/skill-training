@@ -1,10 +1,10 @@
-<p align="center">
-  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="22 秒的方法动画：人类剧本被压缩成大纲，剧本智能体据此重建，损失智能体找出差距，反向智能体把差距写成技能卡，结构分数随之上升。"></a>
-</p>
-
 <h1 align="center">Skill Training</h1>
 
 <p align="center">学习专业手艺，保持模型权重不变。</p>
+
+<p align="center">
+  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="22 秒的方法动画：人类剧本被压缩成大纲，剧本智能体据此重建，损失智能体找出差距，反向智能体把差距写成技能卡，结构分数随之上升。"></a>
+</p>
 
 <p align="center">
   <a href="https://skilltraining-project.github.io/">🌐 项目主页</a> ·
