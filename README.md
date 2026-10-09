@@ -1,6 +1,10 @@
 <h1 align="center">Skill Training</h1>
 
-<p align="center">Learn the craft. Keep the model frozen.</p>
+<p align="center">Let your agent become a real expert in any domain.</p>
+
+<p align="center">
+  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
+</p>
 
 <p align="center">
   <a href="https://skilltraining-project.github.io/">🌐 Project page</a> ·
@@ -23,15 +27,23 @@
 
 <p align="center">English · <a href="README.zh-CN.md">简体中文</a></p>
 
-<p align="center">
-  <a href="https://skilltraining-project.github.io/#method"><img src="docs/assets/teaser.gif" width="960" alt="A 22-second animation of the loop: a human screenplay is corrupted into an outline, the script agent reconstructs it, the loss agent finds the gaps, and the backward agent turns them into skill cards while the structure score climbs."></a>
-</p>
-
 **Skill Training teaches an agent professional craft from finished human work, with the model weights frozen.** It corrupts a professional screenplay into an outline, asks the agent to rebuild it, and turns the gap between the draft and the original into readable skills.
 
 - **No labels, no rewards.** The human artifact is its own teacher. Training needs no new annotations, preference data, or external reward model.
 - **Skills you can read and edit.** What the agent learns is a library of small Markdown cards, and every update is a Git commit you can inspect, revert, or reuse.
 - **Measurable gains that transfer.** Trained on 20 short-drama novels, the library improves all six measured writing behaviors on 385 episodes from unseen novels, wins 49 of 75 blind reader judgments, and also helps other models.
+
+### A different route to domain expertise
+
+**Fine-tuning changes the model. Hand-written skills need experts. Skill Training lets the agent write its own skills by rebuilding finished human work.**
+
+| Approach | Works with<br>closed models | No GPU<br>training | Readable &<br>editable | Survives a<br>model upgrade | No experts<br>writing skills | No success<br>signal needed | Learns from its<br>own attempts |
+|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| Fine-tuning (SFT, LoRA) | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
+| Hand-written skills | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
+| Skills from successful runs | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
+| Rules summarized from examples | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| 🚀 **Skill Training (ours)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 <a id="news"></a>
 
