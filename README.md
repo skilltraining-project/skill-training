@@ -39,11 +39,11 @@
 
 | Approach | Works with<br>closed models | No GPU<br>training | Readable &<br>editable | Survives a<br>model upgrade | No experts<br>writing skills | No success<br>signal needed | Learns from its<br>own attempts |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| Fine-tuning (SFT, LoRA) | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ❌ |
-| Hand-written skills | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| Skills from successful runs | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Rules summarized from examples | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
-| 🚀 **Skill Training (ours)** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Fine-tuning (SFT, LoRA) | ✗ | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ |
+| Hand-written skills | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ |
+| Skills from successful runs | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ |
+| Rules summarized from examples | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ |
+| **Skill Training (ours)** | **✓** | **✓** | **✓** | **✓** | **✓** | **✓** | **✓** |
 
 <a id="news"></a>
 
