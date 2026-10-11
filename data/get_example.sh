@@ -7,7 +7,7 @@
 # the file. See data/README.md for the full attribution.
 #
 # The PDF is not committed to this repository. It is CC BY-SA and the code is
-# MIT, and keeping the two apart means neither licence has to reason about the
+# PolyForm Noncommercial, and keeping the two apart means neither licence has to reason about the
 # other. Fetch it, use it, and note the licence if you redistribute anything
 # derived from it.
 #
