@@ -31,7 +31,7 @@
 
 - **No labels, no rewards.** The human artifact is its own teacher. Training needs no new annotations, preference data, or external reward model.
 - **Skills you can read and edit.** What the agent learns is a library of small Markdown cards, and every update is a Git commit you can inspect, revert, or reuse.
-- **Measurable gains that transfer.** Trained on 20 short-drama novels, the library improves all six measured writing behaviors on 385 episodes from unseen novels, wins 49 of 75 blind reader judgments, and also helps other models.
+- **Measurable gains that transfer.** Trained on a corpus of professional short-drama works, the library improves all six measured writing behaviors on hundreds of episodes from unseen works, wins 49 of 75 blind reader judgments, and also helps other models.
 
 ### A different route to domain expertise
 
@@ -75,7 +75,7 @@ This repository is the reference implementation of **Skill Training with Corrupt
 
 ## Results from the paper
 
-The main experiment trains on **20 professional short-drama novels** and evaluates Claude Sonnet 4.6 on **385 episodes from six unseen novels**. All six metrics with a preferred direction improve significantly over the empty-library baseline in the paper’s paired bootstrap analysis.
+The main experiment trains on **a corpus of professional short-drama works** and evaluates Claude Sonnet 4.6 on **hundreds of episodes from held-out works never seen in training**. All six metrics with a preferred direction improve significantly over the empty-library baseline in the paper’s paired bootstrap analysis.
 
 | Writing behavior | Empty library | Trained library | Human reference |
 | :--- | ---: | ---: | ---: |
@@ -96,7 +96,7 @@ Across 174 skill-update steps, the structure score rises quickly in the first ep
   <a href="https://skilltraining-project.github.io/#training"><img src="docs/assets/training-curve.png" width="960" alt="Training curves: held-out structure score improves over three epochs, while skill-library updates shift from new rules to rewrites."></a>
 </p>
 
-Each snapshot is evaluated on the same **180 held-out episodes**, the first 30 from each unseen novel. The structure score averages four standardized structure metrics with the empty library set to zero. Shading is the 95% bootstrap interval; the dashed line is the human reference.
+Each snapshot is evaluated on the same **set of held-out episodes**, taken from the opening episodes of each unseen work. The structure score averages four standardized structure metrics with the empty library set to zero. Shading is the 95% bootstrap interval; the dashed line is the human reference.
 
 <details>
 <summary><strong>Cross-model transfer: skills learned by one model can guide another</strong></summary>
@@ -176,12 +176,6 @@ skill-training/
 Each run writes to `runs/<run-id>/`: generated scripts, loss reports, agent read traces, and a skill library with its own Git history. Each backward micro-step records the library before and after the update, its diff, and the completed commit.
 
 **The learned artifact is readable text.** Skills are organized into general rules, craft techniques, and genre-specific rules. A format checker limits each card’s length and validates it before the update is committed. See [skill-card format and run artifacts](docs/guide.md#the-skill-library).
-
-## Star history
-
-<p align="center">
-  <a href="https://www.star-history.com/#skilltraining-project/skill-training&Date"><img src="https://api.star-history.com/svg?repos=skilltraining-project/skill-training&type=Date" width="720" alt="GitHub star history for skilltraining-project/skill-training"></a>
-</p>
 
 ## Citation
 
